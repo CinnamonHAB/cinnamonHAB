@@ -1,0 +1,27 @@
+version: '2'
+
+services:
+  openhab:
+    build: .
+    restart: always
+    image: cinnamonhab/openhab:latest
+    volumes:
+      - '/etc/localtime:/etc/localtime:ro'
+      - '/etc/timezone:/etc/timezone:ro'
+      - './openhabconfig/userdata:/openhab/userdata'
+      - './openhabconfig/conf:/openhab/conf'
+    command: 'server'
+    #ports:
+      #- "8080:8080"
+      #- "8443:8443"
+      #- "5555:5555"
+
+  nginx:
+    image: sdelrio/docker-minimal-nginx
+    restart: always
+    volumes:
+      - './openhab.nginx.conf:/etc/nginx/nginx.conf'
+    ports:
+      - "8181:80"
+    links:
+      - openhab
