@@ -21,6 +21,7 @@ services:
     restart: always
     volumes:
       - './openhab.nginx.conf:/etc/nginx/nginx.conf'
+      - './nginxconfig/htpasswd:/etc/nginx/.htpasswd'
     ports:
       - "8181:80"
     links:
