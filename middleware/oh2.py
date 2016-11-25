@@ -74,3 +74,19 @@ def SetItem(item, command):
   url = addr + items_path + "/" + item
   return _PostRequest(url, command)
 
+def _GetItemNamesDict(item):
+  items = {}
+  if item["type"] != "Group":
+    items[item["name"]] = item["type"]
+  else:
+    for v in item["members"]:
+      items.update(_GetItemNamesDict(v))
+
+  return items
+
+def GetProblem(group_name, target_state):
+  group = GetItem(group_name)
+  if ("error" in group):
+    return "error " + str(group["error"])
+
+  problem = "(define (problem problem-name) (:domain cinnemain) (:objects "
