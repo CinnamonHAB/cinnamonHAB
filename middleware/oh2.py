@@ -92,6 +92,7 @@ def _GetItemNamesDict(item):
   return items
 
 # Gets a problem text for the specified group and the target state.
+# Target state will be copied as given to the problem text.
 def GetProblem(group_name, target_state):
   group = GetItem(group_name)
   if ("error" in group):
@@ -109,5 +110,9 @@ def GetProblem(group_name, target_state):
   problem += " ".join(item_names_group)
   problem += " ".join(item_states)
   problem += target_state + "))"
-  print(item_states)
   return problem
+
+# Just a wrapper for file printing. In this case used to print problem files.
+def WriteProblem(problem):
+  with open("problem.pddl", "w") as problem_file:
+    print(problem, file=problem_file)
