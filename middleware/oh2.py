@@ -74,6 +74,13 @@ def SetItem(item, command):
   url = addr + items_path + "/" + item
   return _PostRequest(url, command)
 
+# Returns all items from the given group.
+# If all goes well returns something like
+# {
+#   "item1": "type",
+#   "item2": "type",
+#   "item3": "type"
+# }
 def _GetItemNamesDict(item):
   items = {}
   if item["type"] != "Group":
@@ -84,9 +91,23 @@ def _GetItemNamesDict(item):
 
   return items
 
+# Gets a problem text for the specified group and the target state.
 def GetProblem(group_name, target_state):
   group = GetItem(group_name)
   if ("error" in group):
     return "error " + str(group["error"])
 
+  items = _GetItemNamesDict(group)
+  item_names = [key for key in items]
+  item_types_names = ["(" + items[key] + " " + key + ")" for key in items]
+  item_names_group = ["(IN " + key + " " + group_name + ")" for key in items]
+  item_states = [("(not " if GetItem(key)["state"] == "OFF" else " " ) + "(ON " + key + ")" + ("(not " if GetItem(key)["state"] == "OFF" else " ") for key in items]
   problem = "(define (problem problem-name) (:domain cinnemain) (:objects "
+  problem += " ".join(item_names)
+  problem += ") (:init " + " ".join(item_types_names)
+  problem += " (GROUP " + group_name + ") "
+  problem += " ".join(item_names_group)
+  problem += " ".join(item_states)
+  problem += target_state + "))"
+  print(item_states)
+  return problem
