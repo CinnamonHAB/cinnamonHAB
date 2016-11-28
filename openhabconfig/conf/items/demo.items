@@ -1,0 +1,35 @@
+Group g1 "House 1"
+Group g2 "List of devices"
+
+/* active groups */
+Group:Switch:OR(ON, OFF)        Lights      "All Lights [(%d)]"
+
+Group sg1 "Room 1" (g1)
+Group sg2 "Room 2" (g1)
+Group sg3 "Room 3" (g1)
+Group sg4 "List"   (g2)
+
+Dimmer d1 "Room 1 Lights" (sg1)
+Switch s1 "Light 1" (sg1, Lights)
+Switch s2 "Light 2" (sg1, Lights)
+
+Dimmer d2 "Room 2 Lights" (sg2)
+Switch s3 "Light 3" (sg2, Lights)
+Switch s4 "Light 4" (sg2, Lights)
+
+Dimmer d3 "Room 3 Lights" (sg3)
+Switch s5 "Light 5" (sg3, Lights)
+Switch s6 "Light 6" (sg3, Lights)
+
+
+Switch s1 (sg4)
+Switch s2 (sg4)
+Switch s3 (sg4)
+Switch s4 (sg4)
+Switch s5 (sg4)
+Switch s6 (sg4)
+
+Switch s7 (g2, Lights)
+
+
+// vim: syntax=Xtend syntax=openhab

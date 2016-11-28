@@ -1,2 +1,6 @@
-openhabconfig/
+#openhabconfig/
+log/
+logs/
+tmp/
+lock
 nginxconfig/

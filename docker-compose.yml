@@ -3,7 +3,7 @@ version: '2'
 services:
   openhab:
     build: .
-    restart: always
+    #restart: always
     image: cinnamonhab/openhab:latest
     volumes:
       - '/etc/localtime:/etc/localtime:ro'

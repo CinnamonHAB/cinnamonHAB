@@ -1,0 +1,15 @@
+sitemap demo label="Demo Menu" {
+	Frame item=g1 {
+			Group item=sg1
+			Group item=sg2
+			Group item=sg3
+	}
+	Frame item=g2 {
+			Group item=sg4
+			Switch item=Lights mappings=[ON="All On"]
+			Switch item=Lights mappings=[OFF="All Off"]
+			Switch item=s7
+	}
+}
+
+// vim: syntax=Xtend syntax=openhab
