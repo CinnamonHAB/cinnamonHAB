@@ -116,3 +116,21 @@ def GetProblem(group_name, target_state):
 def WriteProblem(problem):
   with open("problem.pddl", "w") as problem_file:
     print(problem, file=problem_file)
+
+# VERY UGLY!!!
+# TODO: LSTRZ
+# NEEDS FIXING
+def GetStream():
+  req = urllib.request.Request("http://localhost:8080/rest/sitemaps/events/9f61d2f2-68bb-492b-b5d3-6a5d00c1a57f?sitemap=demo&pageid=FF_Bath", None, {"Accept": "text/event-stream"})
+  try:
+    with urllib.request.urlopen(req) as res:
+      while True:
+        res.readline()
+        data = json.loads(res.readline()[6:-1].decode("utf-8"))
+        res.readline()
+        print(data["item"]["name"] + " " + data["item"]["state"])
+  except urllib.error.HTTPError as err:
+    return {"error":err.code}
+
+  return {}
+
