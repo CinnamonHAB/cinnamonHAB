@@ -1,0 +1,7 @@
+Group g "Alpha"   <firstfloor>
+
+/* Lights */
+Switch s1 "Light 1" (g)
+Switch s2 "Light 2" (g)
+Switch s3 "Light 3" (g)
+Switch action "All Lights" (g)
