@@ -1,0 +1,7 @@
+sitemap demo label="Alpha"
+{
+	Frame {
+		Group item=g
+	}
+}
+
