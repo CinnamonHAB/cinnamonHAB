@@ -117,11 +117,35 @@ def WriteProblem(problem):
   with open("problem.pddl", "w") as problem_file:
     print(problem, file=problem_file)
 
+
+
+
+
+
+
+
+
+
+
+subscription_url = ""
+
+def Subscribe():
+  global subscription_url
+  req = urllib.request.Request("http://localhost:8080/rest/sitemaps/events/subscribe", None, {"Content-Type": "application/json", "Accept": "application/json"}, method="POST")
+  try:
+    res = json.loads(urllib.request.urlopen(req).read().decode("utf-8"))
+    subscription_url = res["context"]["headers"]["Location"][0]
+  except urllib.error.HTTPError as err:
+    return {"error":err.code}
+
+  return {}
+
+
 # VERY UGLY!!!
 # TODO: LSTRZ
 # NEEDS FIXING
-def GetStream():
-  req = urllib.request.Request("http://localhost:8080/rest/sitemaps/events/9f61d2f2-68bb-492b-b5d3-6a5d00c1a57f?sitemap=demo&pageid=FF_Bath", None, {"Accept": "text/event-stream"})
+def GetStream(sitemap, pageid):
+  req = urllib.request.Request(subscription_url + "?sitemap=" + sitemap + "&pageid=" + pageid, None, {"Accept": "text/event-stream"})
   try:
     with urllib.request.urlopen(req) as res:
       while True:
