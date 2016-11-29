@@ -1,5 +1,6 @@
 import urllib.request
 import json
+import ff_com
 
 addr = "http://127.0.0.1:8080"
 rest_path = "/rest"
@@ -99,22 +100,28 @@ def GetProblem(group_name, target_state):
     return "error " + str(group["error"])
 
   items = _GetItemNamesDict(group)
+  items.pop("action")
+  items.update({key.replace("s","l"): items[key] for key in items})
+  items.update({key: "Lamp" for key in items if key[0] == "l"})
   item_names = [key for key in items]
   item_types_names = ["(" + items[key] + " " + key + ")" for key in items]
   item_names_group = ["(IN " + key + " " + group_name + ")" for key in items]
-  item_states = [("(not " if GetItem(key)["state"] == "OFF" else " " ) + "(ON " + key + ")" + ("(not " if GetItem(key)["state"] == "OFF" else " ") for key in items]
-  problem = "(define (problem problem-name) (:domain cinnemain) (:objects "
-  problem += " ".join(item_names)
-  problem += ") (:init " + " ".join(item_types_names)
-  problem += " (GROUP " + group_name + ") "
-  problem += " ".join(item_names_group)
-  problem += " ".join(item_states)
+  item_states = [("(not " if GetItem(key.replace("l", "s"))["state"] == "OFF" else " " ) + "(ON " + key + ")" + (") " if GetItem(key.replace("l", "s"))["state"] == "OFF" else " ") for key in items if key[0] == "l"]
+  problem = "(define\n(problem problem-name)\n(:domain cinnemain)\n"
+  problem += "(:objects " + " ".join(item_names) + " " + group_name + ")\n"
+  problem += "(:init " + "\n".join(item_types_names) + "\n"
+  problem += "(GROUP " + group_name + ")\n"
+  problem += "\n".join(item_names_group) + "\n"
+  problem += "\n".join(item_states) + "\n"
+  problem += "(AFFECTS s1 l1)\n"
+  problem += "(AFFECTS s2 l2)\n"
+  problem += "(AFFECTS s3 l3))\n"
   problem += target_state + "))"
   return problem
 
 # Just a wrapper for file printing. In this case used to print problem files.
 def WriteProblem(problem):
-  with open("problem.pddl", "w") as problem_file:
+  with open("problem.txt", "w") as problem_file:
     print(problem, file=problem_file)
 
 
@@ -152,7 +159,18 @@ def GetStream(sitemap, pageid):
         res.readline()
         data = json.loads(res.readline()[6:-1].decode("utf-8"))
         res.readline()
-        print(data["item"]["name"] + " " + data["item"]["state"])
+        item = data["item"]["name"]
+        state = data["item"]["state"]
+        print(item + " changed to " + state)
+        if item == "action":
+          if state == "ON":
+            target_state = "(:goal (and (ON l1) (ON l2) (ON l3) )"
+          elif state == "OFF":
+            target_state = "(:goal (and (not (ON l1)) (not (ON l2)) (not (ON l3)) )"
+
+          problem = GetProblem("g", target_state)
+          WriteProblem(problem)
+          print(ff_com.get_plan("./", "domain.txt", "problem.txt", "0"))
   except urllib.error.HTTPError as err:
     return {"error":err.code}
 
