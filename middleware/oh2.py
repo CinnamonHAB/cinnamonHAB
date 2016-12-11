@@ -181,6 +181,16 @@ def _GetSteps(ff_output):
         steps[item] = "OFF"
   return steps
 
+# Turns of all action switches that are not the one passed to this function.
+def _TurnOffActions(item):
+  for i in range(1337):
+    items = GetItems("action" + str(i));
+    if "error" in items:
+      break
+    if item in items:
+      continue
+    SetItem(item["name"], "OFF")
+
 # Opens a long-pollin stream for the desired sitemap and pageid (can be found out through browser).
 # Must be called after Subscribe(). Once called, the connection will not close and will be kept open.
 # If something goes wrong, returns {"error":400} (but using the real code that it got).
@@ -203,6 +213,7 @@ def StartStream(sitemap, pageid):
           WriteProblem(problem)
           ff_output = ff_com.get_plan("./", "domain.txt", "problem.txt", "0")
           steps = _GetSteps(ff_output)
+          _TurnOffActions(item)
           for item in steps:
             SetItem(item, steps[item])
   except urllib.error.HTTPError as err:
