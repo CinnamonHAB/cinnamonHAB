@@ -8,6 +8,7 @@ items_path = rest_path + "/items"
 subscription_path = rest_path + "/sitemaps/events/subscribe"
 stream_url = "" # updated after Subscribe()
 map_item_states_to_target_states = {} # update in _GetTargetState
+ignore_list = [] # list of action items whose next state change will be ignored
 
 # Sets a new address to send requests to. Provide an IP/domain with a port, without the protocol.
 # Protocol gets automatically added. Does not return anything. Default is 127.0.0.1,
@@ -105,7 +106,8 @@ def GetProblem(group_name, target_state):
   items = _GetItemNamesAndTypesDict(group)
   for item in map_item_states_to_target_states:
     items.pop(item)
-  items.update({key.replace("s","l") : "Lamp" for key in items})
+  items.update({key.replace("s","l") : "Lamp" for key in items if key.startswith("s")})
+  items.update({key : "Dimmer" for key in items if key.startswith("d")})
   item_names = [key for key in items]
   item_types_names = ["(" + items[key] + " " + key + ")" for key in items]
   item_names_group = ["(IN " + key + " " + group_name + ")" for key in items]
@@ -182,20 +184,26 @@ def _GetSteps(ff_output):
   return steps
 
 # Turns of all action switches that are not the one passed to this function.
-def _TurnOffActions(item):
+# Return the list of items whose state changed.
+def _TurnOffActions(action_item):
+  ignore_list = []
   for i in range(1337):
-    items = GetItems("action" + str(i));
-    if "error" in items:
-      break
-    if item in items:
+    if "action" + str(i) == action_item:
       continue
-    SetItem(item["name"], "OFF")
+    item = GetItem("action" + str(i));
+    if "error" in item:
+      break
+    if item["state"] == "ON":
+      ignore_list.append(item["name"])
+      SetItem(item["name"], "OFF")
+  return ignore_list
 
 # Opens a long-pollin stream for the desired sitemap and pageid (can be found out through browser).
 # Must be called after Subscribe(). Once called, the connection will not close and will be kept open.
 # If something goes wrong, returns {"error":400} (but using the real code that it got).
 def StartStream(sitemap, pageid):
   global stream_url
+  global ignore_list
   req = urllib.request.Request(stream_url + "?sitemap=" + sitemap + "&pageid=" + pageid, None, {"Accept": "text/event-stream"})
   try:
     with urllib.request.urlopen(req) as res:
@@ -206,14 +214,20 @@ def StartStream(sitemap, pageid):
         item = data["item"]["name"]
         state = data["item"]["state"]
         print(item + " changed to " + state)
+        if item in ignore_list:
+          ignore_list.remove(item)
+          continue
         target_state = _GetTargetState(item, state)
         print(target_state)
         if target_state != None:
           problem = GetProblem("g", target_state)
           WriteProblem(problem)
           ff_output = ff_com.get_plan("./", "domain.txt", "problem.txt", "0")
+          print("FF_OUTPUT:")
+          print(ff_output)
           steps = _GetSteps(ff_output)
-          _TurnOffActions(item)
+          if state == "ON":
+            ignore_list.extend(_TurnOffActions(item))
           for item in steps:
             SetItem(item, steps[item])
   except urllib.error.HTTPError as err:
