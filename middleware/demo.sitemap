@@ -1,4 +1,4 @@
-sitemap demo label="Alpha"
+sitemap demo label="Beta"
 {
 	Frame {
 		Group item=g

@@ -154,13 +154,17 @@ def _GetTargetState(item, state):
   return "(:goal (and\n" + "\n".join(target_state) + "))\n"
 
 # Extract steps from metric ff's output.
+# Returns {"item1":"state1", "item2":"state2", "item3":"state3"}.
 def _GetSteps(ff_output):
   ff_output = ff_output.lower()
   is_steps = False
   steps_str = []
   for line in ff_output.splitlines():
     if line.startswith("step"):
-      steps_str.append(line.split(":")[1].strip())
+      try:
+        steps_str.append(line.split(":")[1].strip())
+      except Exception as e:
+        return {}
       is_steps = True
     elif is_steps and line == "":
       break
@@ -180,7 +184,7 @@ def _GetSteps(ff_output):
 # Opens a long-pollin stream for the desired sitemap and pageid (can be found out through browser).
 # Must be called after Subscribe(). Once called, the connection will not close and will be kept open.
 # If something goes wrong, returns {"error":400} (but using the real code that it got).
-def GetStream(sitemap, pageid):
+def StartStream(sitemap, pageid):
   global stream_url
   req = urllib.request.Request(stream_url + "?sitemap=" + sitemap + "&pageid=" + pageid, None, {"Accept": "text/event-stream"})
   try:

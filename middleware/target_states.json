@@ -1,0 +1,10 @@
+{
+  "action1":{
+             "ON"  : {"l1":true, "l2":true, "l3":true},
+             "OFF"  : {"l1":false, "l2":false, "l3":false}
+           },
+  "action2":{
+             "ON"  : {"l1":true, "l2":true, "l3":true},
+             "OFF"  : {"l1":false, "l2":false, "l3":false}
+           }
+}

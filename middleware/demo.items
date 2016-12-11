@@ -1,7 +1,11 @@
-Group g "Alpha"   <firstfloor>
+Group g "Beta"   <firstfloor>
 
 /* Lights */
 Switch s1 "Light 1" (g)
 Switch s2 "Light 2" (g)
 Switch s3 "Light 3" (g)
-Switch action "All Lights" (g)
+Switch s4 "TV" (g)
+Dimmer d1 "Dimmer 1" (g)
+Dimmer d2 "Dimmer 2" (g)
+Switch action1 "All Lights" (g)
+Switch action2 "Romantic mode" (g)
