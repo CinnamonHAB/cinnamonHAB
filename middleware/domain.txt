@@ -5,18 +5,18 @@
    (GROUP ?g)
    (AFFECTS ?switch ?lamp)
    (DIMMER ?d)
-   (ISNIGHT ?d)
+   (DIMMED ?d)
    (IN ?l ?g)
  )
 (:action dim
   :parameters(?d)
-  :precondition(and (Dimmer ?d) (not (ISNIGHT ?d)))
-  :effect(and (ISNIGHT ?d))
+  :precondition(and (Dimmer ?d) (not (DIMMED ?d)))
+  :effect(and (DIMMED ?d))
 )
 (:action brighten
   :parameters(?d)
-  :precondition(and (Dimmer ?d) (ISNIGHT ?d))
-  :effect(and (NOT (ISNIGHT ?d)))
+  :precondition(and (Dimmer ?d) (DIMMED ?d))
+  :effect(and (NOT (DIMMED ?d)))
 )
 (:action flip-switch
  :parameters (?s)
