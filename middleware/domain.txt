@@ -10,13 +10,22 @@
  )
 (:action dim
   :parameters(?d)
-  :precondition(and (Dimmer ?d) (not (DIMMED ?d)))
+  :precondition(and (Dimmer ?d) (not (DIMMED ?d)) (ON ?d))
   :effect(and (DIMMED ?d))
 )
 (:action brighten
   :parameters(?d)
   :precondition(and (Dimmer ?d) (DIMMED ?d))
   :effect(and (NOT (DIMMED ?d)))
+)
+(:action flip-dimmer
+ :parameters(?d)
+ :precondition(and (DIMMER ?d))
+ :effect(and (when(and (ON ?d))
+		(NOT (ON ?d))
+	     (when(and (NOT (ON ?d)))
+		(ON ?d))
+)
 )
 (:action flip-switch
  :parameters (?s)
