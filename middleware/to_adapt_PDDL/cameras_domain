@@ -1,0 +1,79 @@
+(define (domain cameras)
+  (:requirements :strips :negative-preconditions
+                 :conditional-effects :disjunctive-preconditions)
+  (:constants ONE TWO)
+  (:predicates
+         (upgraded ?c)
+         (iscovering ?c ?r)
+         (cancover1 ?c ?r)
+         (cancover2 ?c ?r)
+         (ison ?c)
+         (critical ?r)
+         (check) (safe)
+         (mode ?c ?m)
+  )
+  ;; (:functions (total-cost)
+  ;; )
+
+  (:action UPGRADE
+        :parameters (?c)
+        :precondition (and 
+		 (not(check)) (safe)
+                 (not (ison ?c))
+                 (not (upgraded ?c)))
+        :effect (and (check) (upgraded ?c))
+  )
+  (:action TURN-ON-MODE1
+        :parameters  (?c)
+        :precondition (and (not(check)) (safe)
+                      (not (ison ?c)))
+        :effect (and (check) (ison ?c) (not (mode ?c TWO)) (mode ?c ONE)
+                     (forall (?r)
+                        (when (cancover1 ?c ?r)
+                              (iscovering ?c ?r))
+                     )
+                )
+  )
+  (:action TURN-UP-MODE2
+        :parameters  (?c)
+        :precondition (and (not(check)) (safe) (ison ?c) (mode ?c ONE) )
+        :effect (and (check) (not (mode ?c ONE)) (mode ?c TWO)
+                     (forall (?r)
+                        (when (cancover2 ?c ?r)
+                              (iscovering ?c ?r))
+                     )
+                 )
+  )
+
+  (:action TURN-OFF
+        :parameters  (?c)
+        :precondition (and (not(check)) (safe)
+                      (ison ?c))
+        :effect (and (check) (not (ison ?c))
+                     (forall (?r)
+                        (when (cancover2 ?c ?r)
+                              (not (iscovering ?c ?r)))
+                     )
+                )
+  )
+  (:action SAFETY-CHECK
+    :parameters ()
+        :precondition (check)
+        :effect
+                (and    (not(check))
+                        (when
+                                (forall (?r) (imply
+                                               (critical ?r)
+                                               (exists (?c) (iscovering ?c ?r))))
+                                (safe)
+                        )
+                        (when
+                                (exists (?r)
+                                        (and (critical ?r)
+                                         (forall (?c) (not (iscovering ?c ?r)))))
+                                (not (safe))
+                        )
+                )
+  )
+)
+
