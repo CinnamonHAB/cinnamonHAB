@@ -1,10 +1,10 @@
 {
   "action0":{
-             "ON"  : {"l1":true, "l2":true, "l3":true, "d1":true, "d2":true},
-             "OFF"  : {"l1":false, "l2":false, "l3":false, "d1":false, "d2":false}
+             "ON"  : {"l1":true, "l2":true, "l3":true, "d1":100, "d2":100},
+             "OFF"  : {"l1":false, "l2":false, "l3":false, "d1":0, "d2":0}
            },
   "action1":{
-             "OFF"  : {"l1":true, "l2":true, "l3":true, "d1":true, "d2":true},
-             "ON"  : {"l1":false, "l2":false, "l3":false, "d1":false, "d2":false}
+             "OFF"  : {"l1":false, "l2":false, "l3":false, "d1":0, "d2":0},
+             "ON"  : {"l1":false, "l2":false, "l3":false, "d1":30, "d2":30}
            }
 }

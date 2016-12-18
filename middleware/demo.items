@@ -4,7 +4,6 @@ Group g "Beta"   <firstfloor>
 Switch s1 "Light 1" (g)
 Switch s2 "Light 2" (g)
 Switch s3 "Light 3" (g)
-Switch s4 "TV" (g)
 Dimmer d1 "Dimmer 1" (g)
 Dimmer d2 "Dimmer 2" (g)
 Switch action0 "All Lights" (g)

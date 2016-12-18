@@ -112,7 +112,8 @@ def GetProblem(group_name, target_state):
   item_types_names = ["(" + items[key] + " " + key + ")" for key in items]
   item_names_group = ["(IN " + key + " " + group_name + ")" for key in items]
   item_states = ["(not (ON " + key + "))" if GetItem(key.replace("l", "s"))["state"] == "OFF" else "(ON " + key + ")" for key in items if key[0] == "l"]
-  #item_states.extend(["(not (DIMMED " + key + "))" if int(GetItem(key)["state"]) > 50 else "(DIMMED " + key + ")" for key in items if key[0] == "d"])
+  item_states.extend(["(not (ON " + key + "))" if int(GetItem(key)["state"]) == 0 else "(ON " + key + ")" for key in items if key[0] == "d"])
+  item_states.extend(["(not (DIMMED " + key + "))" if int(GetItem(key)["state"]) != 30 else "(DIMMED " + key + ")" for key in items if key[0] == "d"])
   problem = "(define\n(problem problem-name)\n(:domain cinnemain)\n"
   problem += "(:objects " + " ".join(item_names) + " " + group_name + ")\n"
   problem += "(:init " + "\n".join(item_types_names) + "\n"
@@ -154,7 +155,8 @@ def _GetTargetState(item, state):
   except Exception as e:
     return None
   target_state = ["(ON " + item + ")" if target_item_states[item] else "(not (ON " + item + "))" for item in target_item_states if item[0] == "l"]
-  target_state.extend(["(DIMMED " + item + ")" if not target_item_states[item] else "(not (DIMMED " + item + "))" for item in target_item_states if item[0] == "d"])
+  target_state.extend(["(ON " + item + ")" if target_item_states[item] != 0 else "(not (ON " + item + "))" for item in target_item_states if item[0] == "d"])
+  target_state.extend(["(DIMMED " + item + ")" if target_item_states[item] == 30 else "(not (DIMMED " + item + "))" for item in target_item_states if item[0] == "d"])
   return "(:goal (and\n" + "\n".join(target_state) + "))\n"
 
 # Extract steps from metric ff's output.
@@ -183,6 +185,15 @@ def _GetSteps(ff_output):
         steps[item] = "ON"
       else:
         steps[item] = "OFF"
+    elif action.startswith("flip"):
+      if GetItem(item)["state"] == "0":
+        steps[item] = "100"
+      else:
+        steps[item] = "0"
+    elif action.startswith("dim"):
+      steps[item] = "30"
+    elif action.startswith("brighten"):
+      steps[item] = "100"
   return steps
 
 # Turns of all action switches that are not the one passed to this function.
@@ -219,20 +230,6 @@ def StartStream(sitemap, pageid):
         if item in ignore_list:
           ignore_list.remove(item)
           continue
-        if item == "action1":  # NASTY HACK
-          if GetItem("action1")["state"] == "ON":
-            SetItem("d1", "30")
-            SetItem("d2", "30")
-          else:
-            SetItem("d2", "0")
-            SetItem("d1", "0")
-        elif item == "action0":
-          if GetItem("action0")["state"] == "ON":
-            SetItem("d1", "100")
-            SetItem("d2", "100")
-          else:
-            SetItem("d2", "0")
-            SetItem("d1", "0")
         target_state = _GetTargetState(item, state)
         print(target_state)
         if target_state != None:
