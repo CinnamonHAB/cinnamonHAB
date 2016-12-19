@@ -34,7 +34,7 @@
     <!-- Header -->
     <header>
         <div class="container">
-                <div class="row">
+                <div class="row" id="devices">
                     <div class="intro-text">
                         <span class="name">Devices</span>
                     </div>
@@ -47,134 +47,11 @@
                 	</div>
                 </div>
                 <div class="row">
-                		<div class="col-lg-1">
-                			<img id="light1" src="<%= asset_path('light_OFF_light.png') %>" width="50" height="50">
-                		</div>
-               			<div class="col-lg-2">
-                    		<div class="intro-text">
-                      		  <span class="skills">Light 1</span>
-                    		</div>
-               		 	</div>
-                		<div class="col-lg-9">
-                			<div class="intro-text">
-                				<input onclick="change1()" type="button" id="myButton1"class="btn btn-primary" value="Light 1 ON/OFF"></input>
-                                <script>
-                                    function change1() {
-                                        resetRom1();
-                                        var light1 = document.getElementById("light1");
-                                        if (lamp_state[0] == "ON") {
-                                            lamp_state[0] = "OFF";
-                                            sendCommand( "OFF", "s1" );
-                                            light1.src = "<%= asset_path('light_OFF_light.png') %>";
-                                        }
-                                        else {
-                                            lamp_state[0] = "ON";
-                                            sendCommand( "ON", "s1" );
-                                            light1.src = "<%= asset_path('light_ON.png') %>";
-                                        }
-                                    }
-                                </script>
-                    		</div>
-                		</div>
-                </div>
-                <div class="row">
-                		<div class="col-lg-1">
-                			<img id="light2" src="<%= asset_path('light_OFF_light.png') %>"width="50" height="50">
-                		</div>
-                	 	<div class="col-lg-2">
-                    		<div class="intro-text">
-                        <span class="skills">Light 2</span>
-                    		</div>
-                		</div>
-                 		<div class="col-lg-9">
-                	 		<input onclick="change2()" type="button" id="myButton2"class="btn btn-primary" value="Light 2 ON/OFF"></input>
-                            <script>
-                                    function change2() {
-                                        resetRom1();
-                                        var light2 = document.getElementById("light2");
-                                        if (lamp_state[1] == "ON") {
-                                            lamp_state[1] = "OFF";
-                                            sendCommand( "OFF", "s2" );
-                                            light2.src = "<%= asset_path('light_OFF_light.png') %>";
-                                        }
-                                        else {
-                                            lamp_state[1] = "ON";
-                                            sendCommand( "ON", "s2" );
-                                            light2.src = "<%= asset_path('light_ON.png') %>";
-                                        }
-                                    }
-                                </script>
-                		</div>
-
-                </div>
-                <div class="row">
                 	<div class="col-lg-2">
                 		<div class="intro-text">
                 			<span class="skills">Room 2</span>
                 		</div>
                 	</div>
-                </div>
-                 <div class="row">
-                 		<div class="col-lg-1">
-                			<img id="light3" src="<%= asset_path('light_OFF_light.png') %>"width="50" height="50">
-                		</div>
-               			<div class="col-lg-2">
-                    		<div class="intro-text">
-                      		  <span class="skills">Light 3</span>
-                    		</div>
-               		 	</div>
-                		<div class="col-lg-9">
-                			<div class="intro-text">
-                				<input onclick="change3()" type="button" id="myButton3"class="btn btn-primary" value="Light 3 ON/OFF"></input>
-                                <script>
-                                    function change3() {
-                                        resetRom2();
-                                        var light2 = document.getElementById("light3");
-                                        if (lamp_state[2] == "ON") {
-                                            lamp_state[2] = "OFF";
-                                            sendCommand( "OFF", "s3" );
-                                            light3.src = "<%= asset_path('light_OFF_light.png') %>";
-                                        }
-                                        else {
-                                            lamp_state[2] = "ON";
-                                            sendCommand( "OFF", "s3" );
-                                            light3.src = "<%= asset_path('light_ON.png') %>";
-                                        }
-                                    }
-                                </script>
-                    		</div>
-                		</div>
-                </div>
-                 <div class="row">
-                 		<div class="col-lg-1">
-                			<img id="light4" src="<%= asset_path('light_OFF_light.png') %>"width="50" height="50">
-                		</div>
-               			<div class="col-lg-2">
-                    		<div class="intro-text">
-                      		  <span class="skills">Light 4</span>
-                    		</div>
-               		 	</div>
-                		<div class="col-lg-9">
-                			<div class="intro-text">
-                				<input onclick="change4()" type="button" id="myButton4"class="btn btn-primary" value="Light 4 ON/OFF"></input>
-                                <script>
-                                    function change4() {
-                                        resetRom2();
-                                        var light4 = document.getElementById("light4");
-                                        if (lamp_state[3] == "ON") {
-                                            lamp_state[3] = "OFF";
-                                            sendCommand( "OFF", "s4" );
-                                            light4.src = "<%= asset_path('light_OFF_light.png') %>";
-                                        }
-                                        else {
-                                            lamp_state[3] = "ON";
-                                            sendCommand( "ON", "s4" );
-                                            light4.src = "<%= asset_path('light_ON.png') %>";
-                                        }
-                                    }
-                                </script>
-                    		</div>
-                		</div>
                 </div>
                  <div class="row">
                  		<div class="col-lg-1">
@@ -345,8 +222,12 @@
         </div>
     </footer>
     <script>
+        document.body.onload = getItems();
+
         var lamp_state = new Array("OFF" ,"OFF", "OFF", "OFF");
         var rom_state = new Array("OFF", "OFF");
+        var numItems = 0;
+        var itemState = new Array();
         function resetRom1() {
             if(rom_state[0] == "ON") {
                 rom_state[0] = "OFF";
@@ -372,16 +253,84 @@
             var request = $.ajax ( {
                 type       : "GET",
                 url        : "http://localhost:3000/rest/getitems",
-                headers    : { "Accept": "txt/plain"},
+                headers    : { "Accept": "text/plain"},
             });
 
             request.done( function(data) { 
                 console.log( "Success: Status=" + data );
+                showItems(JSON.parse(data));
             });
 
             request.fail( function(jqXHR, textStatus ) { 
                 console.log( "Failure: " + textStatus );
             });
+        }
+        function showItems(items) {
+            for(var i = 0; i <Object.keys(items).length; i++) {
+                if(items[i].type != "Group") {
+
+                    var row = document.createElement("div");
+                    row.setAttribute('class','row');
+                    row.setAttribute('id', items[i].name);
+
+                    var col = document.createElement("div");
+                    col.setAttribute('class','col-lg-1');
+                    row.appendChild(col);
+
+                    var icon = document.createElement("img");
+                    icon.setAttribute('class','icon');
+                    icon.setAttribute('src','<%= asset_path('light_OFF_light.png') %>');
+                    icon.setAttribute('width','50');
+                    icon.setAttribute('height','50');
+                    icon.setAttribute('id', items[i].name+'icon')
+                    col.appendChild(icon);
+
+                    var col2 = document.createElement("div");
+                    col2.setAttribute('class','col-lg-2 intro-text');
+
+                    var item = document.createElement('span');
+                    item.innerHTML = items[i].label;
+                    item.setAttribute('class','skills');
+                    item.setAttribute('id', items[i].name+'label')
+                    col2.appendChild(item);
+
+                    row.appendChild(col2);
+
+                    var col3 = document.createElement("div");
+                    col3.setAttribute('class','col-lg-9');
+
+                    var b = document.createElement('button');
+                    b.setAttribute('class', 'btn btn-primary');
+                    b.setAttribute('id', items[i].name+'button')
+                    console.log(items[i].name);
+                    b.setAttribute('onclick','switchIt(this.id,'+numItems+')');
+                    b.innerHTML = 'Turn ON/OFF';
+                    col3.appendChild(b);
+
+                    row.appendChild(col3);
+                    if(items[i].state == "NULL")
+                        itemState[numItems] = "OFF";
+                    else
+                        itemState[numItems] = items[i].state;
+
+                    var lastItem = document.getElementById("devices");
+                    devices.appendChild(row);
+                    numItems++;
+                }
+            }
+            
+        }
+        function switchIt(buttonname, index) {
+            var name = buttonname.split('button')[0];
+            var icon = document.getElementById(name+"icon");
+            if (itemState[index] == "ON") {
+                itemState[index] = "OFF";
+                icon.src = "<%= asset_path('light_OFF_light.png') %>";
+            }
+            else {
+                itemState[index] = "ON";
+                icon.src = "<%= asset_path('light_ON.png') %>";
+            }
         }
         function sendCommand( txtCommand, item ) {
             var request = $.ajax ( {
