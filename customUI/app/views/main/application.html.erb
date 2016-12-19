@@ -1,0 +1,440 @@
+ <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <%= csrf_meta_tags %>
+    <link rel="stylesheet" type="text/css" href="devices.css">
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+
+    <title>Beta Presentation</title>
+
+    <!-- Custom Fonts -->
+    <!--<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">-->
+    
+
+</head>
+
+<body id="page-top" class="index">
+    <!-- Navigation -->
+    <nav id="mainNav" class="aux navbar-custom">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <a class="navbar-brand">cinnamon bun</a>
+            </div>
+        </div>
+    </nav>
+    <!-- Header -->
+    <header>
+        <div class="container">
+                <div class="row">
+                    <div class="intro-text">
+                        <span class="name">Devices</span>
+                    </div>
+                </div>
+                <div class="row">
+                	<div class="col-lg-2">
+                		<div class="intro-text">
+                			<span class="skills">Room 1</span>
+                		</div>
+                	</div>
+                </div>
+                <div class="row">
+                		<div class="col-lg-1">
+                			<img id="light1" src="<%= asset_path('light_OFF_light.png') %>" width="50" height="50">
+                		</div>
+               			<div class="col-lg-2">
+                    		<div class="intro-text">
+                      		  <span class="skills">Light 1</span>
+                    		</div>
+               		 	</div>
+                		<div class="col-lg-9">
+                			<div class="intro-text">
+                				<input onclick="change1()" type="button" id="myButton1"class="btn btn-primary" value="Light 1 ON/OFF"></input>
+                                <script>
+                                    function change1() {
+                                        resetRom1();
+                                        var light1 = document.getElementById("light1");
+                                        if (lamp_state[0] == "ON") {
+                                            lamp_state[0] = "OFF";
+                                            sendCommand( "OFF", "s1" );
+                                            light1.src = "<%= asset_path('light_OFF_light.png') %>";
+                                        }
+                                        else {
+                                            lamp_state[0] = "ON";
+                                            sendCommand( "ON", "s1" );
+                                            light1.src = "<%= asset_path('light_ON.png') %>";
+                                        }
+                                    }
+                                </script>
+                    		</div>
+                		</div>
+                </div>
+                <div class="row">
+                		<div class="col-lg-1">
+                			<img id="light2" src="<%= asset_path('light_OFF_light.png') %>"width="50" height="50">
+                		</div>
+                	 	<div class="col-lg-2">
+                    		<div class="intro-text">
+                        <span class="skills">Light 2</span>
+                    		</div>
+                		</div>
+                 		<div class="col-lg-9">
+                	 		<input onclick="change2()" type="button" id="myButton2"class="btn btn-primary" value="Light 2 ON/OFF"></input>
+                            <script>
+                                    function change2() {
+                                        resetRom1();
+                                        var light2 = document.getElementById("light2");
+                                        if (lamp_state[1] == "ON") {
+                                            lamp_state[1] = "OFF";
+                                            sendCommand( "OFF", "s2" );
+                                            light2.src = "<%= asset_path('light_OFF_light.png') %>";
+                                        }
+                                        else {
+                                            lamp_state[1] = "ON";
+                                            sendCommand( "ON", "s2" );
+                                            light2.src = "<%= asset_path('light_ON.png') %>";
+                                        }
+                                    }
+                                </script>
+                		</div>
+
+                </div>
+                <div class="row">
+                	<div class="col-lg-2">
+                		<div class="intro-text">
+                			<span class="skills">Room 2</span>
+                		</div>
+                	</div>
+                </div>
+                 <div class="row">
+                 		<div class="col-lg-1">
+                			<img id="light3" src="<%= asset_path('light_OFF_light.png') %>"width="50" height="50">
+                		</div>
+               			<div class="col-lg-2">
+                    		<div class="intro-text">
+                      		  <span class="skills">Light 3</span>
+                    		</div>
+               		 	</div>
+                		<div class="col-lg-9">
+                			<div class="intro-text">
+                				<input onclick="change3()" type="button" id="myButton3"class="btn btn-primary" value="Light 3 ON/OFF"></input>
+                                <script>
+                                    function change3() {
+                                        resetRom2();
+                                        var light2 = document.getElementById("light3");
+                                        if (lamp_state[2] == "ON") {
+                                            lamp_state[2] = "OFF";
+                                            sendCommand( "OFF", "s3" );
+                                            light3.src = "<%= asset_path('light_OFF_light.png') %>";
+                                        }
+                                        else {
+                                            lamp_state[2] = "ON";
+                                            sendCommand( "OFF", "s3" );
+                                            light3.src = "<%= asset_path('light_ON.png') %>";
+                                        }
+                                    }
+                                </script>
+                    		</div>
+                		</div>
+                </div>
+                 <div class="row">
+                 		<div class="col-lg-1">
+                			<img id="light4" src="<%= asset_path('light_OFF_light.png') %>"width="50" height="50">
+                		</div>
+               			<div class="col-lg-2">
+                    		<div class="intro-text">
+                      		  <span class="skills">Light 4</span>
+                    		</div>
+               		 	</div>
+                		<div class="col-lg-9">
+                			<div class="intro-text">
+                				<input onclick="change4()" type="button" id="myButton4"class="btn btn-primary" value="Light 4 ON/OFF"></input>
+                                <script>
+                                    function change4() {
+                                        resetRom2();
+                                        var light4 = document.getElementById("light4");
+                                        if (lamp_state[3] == "ON") {
+                                            lamp_state[3] = "OFF";
+                                            sendCommand( "OFF", "s4" );
+                                            light4.src = "<%= asset_path('light_OFF_light.png') %>";
+                                        }
+                                        else {
+                                            lamp_state[3] = "ON";
+                                            sendCommand( "ON", "s4" );
+                                            light4.src = "<%= asset_path('light_ON.png') %>";
+                                        }
+                                    }
+                                </script>
+                    		</div>
+                		</div>
+                </div>
+                 <div class="row">
+                 		<div class="col-lg-1">
+                			<img id="light5" src="<%= asset_path('light_green.png') %>"width="50" height="50">
+                		</div>
+               			<div class="col-lg-2">
+                    		<div class="intro-text">
+                      		  <span class="skills">All lights</span>
+                    		</div>
+               		 	</div>
+                		<div class="col-lg-2">
+                			<div class="intro-text">
+                				<input onclick="allON()" type="button" id="myButton5"class="btn btn-primary" value="Lights ON"></input>
+                                <script>
+                                    function allON() {
+                                        resetRomAll();
+                                        for (var i=0;i < lamp_state.length;i++) {
+                                            if(lamp_state[i] == "OFF") {
+                                                lamp_state[i] = "ON";
+                                                sendCommand( "ON", "s"+(i+1).toString() );
+                                                var light = document.getElementById("light"+(i+1).toString());
+                                                light.src = "<%= asset_path('light_ON.png') %>";
+                                            }
+                                        }
+                                    }
+                                </script>
+                    		</div>
+                		</div>
+                        <div class="col-lg-2">
+                            <div class="intro-text">
+                                <input onclick="allOFF()" type="button" id="myButton6"class="btn btn-primary" value="Lights OFF"></input>
+                                <script>
+                                    function allOFF() {
+                                        resetRomAll();
+                                        for (var i=0;i < lamp_state.length;i++) {
+                                            if(lamp_state[i] == "ON") {
+                                                lamp_state[i] = "OFF";
+                                                sendCommand( "OFF", "s"+(i+1).toString() );
+                                                var light = document.getElementById("light"+(i+1).toString());
+                                                light.src = "<%= asset_path('light_OFF_light.png') %>";
+                                            }
+                                        }
+                                    }
+                                </script>
+                            </div>
+
+                        </div>
+                </div>
+                <div class="row">
+                	<div class="intro-text">
+                        <span class="name">Modes</span>
+                    </div>
+                </div>
+                	 <div class="row">
+                	 	<div class="col-lg-1">
+                			<img src="<%= asset_path('heart.png') %>"width="50" height="50">
+                		</div>
+               			<div class="col-lg-2">
+                    		<div class="intro-text">
+                      		  <span class="skills">Romantic</span>
+                    		</div>
+               		 	</div>
+                        <div class="col-lg-2">
+                            <img id="rom1" src="<%= asset_path('light_OFF_light.png') %>"width="50" height="50">
+                        </div>
+                		<div class="col-lg-2">
+                			<div class="intro-text">
+                				<input onclick="rom1()" type="button" id="myButton6"class="btn btn-primary" value="Room 1 ON/OFF"></input>
+                        		<script>
+                        		function rom1() {
+                                    if(rom_state[0] == "OFF") {
+                                        rom_state[0] = "ON";
+                                        sendCommand( "ON", "action1" );
+                                        var rom1 = document.getElementById("rom1");
+                                        rom1.src = "<%= asset_path('light_ON.png') %>";
+                                        var light1 = document.getElementById("light1");
+                                        var light2 = document.getElementById("light2");
+                                        if (lamp_state[0] == "OFF") {
+                                            lamp_state[0] = "ON";
+                                            sendCommand( "ON", "s1" );
+                                            light1.src = "<%= asset_path('light_ON.png') %>";
+                                        }
+                                        if (lamp_state[1] == "ON") {
+                                            lamp_state[1] = "OFF";
+                                            sendCommand( "OFF", "s2" );
+                                            light2.src = "<%= asset_path('light_OFF_light.png') %>";
+                                        }
+                                    }else {
+                                        rom_state[0] = "OFF";
+                                        sendCommand( "OFF", "action1" );
+                                        var rom1 = document.getElementById("rom1");
+                                        rom1.src = "<%= asset_path('light_OFF_light.png') %>";
+                                        var light2 = document.getElementById("light2");
+                                        if (lamp_state[0] == "ON" && lamp_state[1] == "OFF") {
+                                            lamp_state[1] = "ON";
+                                            sendCommand( "ON", "s2" );
+                                            light2.src = "<%= asset_path('light_ON.png') %>";
+                                        }
+                                    }
+    							}
+                        		</script>
+                    		</div>
+                		</div>
+                        <div class="col-lg-2">
+                            <img id="rom2" src="<%= asset_path('light_OFF_light.png') %>"width="50" height="50">
+                        </div>
+                		<div class="col-lg-2">
+                			<div class="intro-text">
+                				<input onclick="rom2()" type="button" id="myButton7"class="btn btn-primary" value="Room 2 ON/OFF"></input>
+                                <script>
+                                function rom2() {
+                                    if(rom_state[1] == "OFF") {
+                                        rom_state[1] = "ON";
+                                        sendCommand( "ON", "action2" );
+                                        var rom2 = document.getElementById("rom2");
+                                        rom2.src = "<%= asset_path('light_ON.png') %>";
+                                        var light3 = document.getElementById("light3");
+                                        var light4 = document.getElementById("light4");
+                                        if (lamp_state[2] == "OFF") {
+                                            lamp_state[2] = "ON";
+                                            sendCommand( "ON", "s3" );
+                                            light3.src = "<%= asset_path('light_ON.png') %>";
+                                        }
+                                        if (lamp_state[3] == "ON") {
+                                            lamp_state[3] = "OFF";
+                                            sendCommand( "OFF", "s4" );
+                                            light4.src = "<%= asset_path('light_OFF_light.png') %>";
+                                        }
+                                    }else {
+                                        rom_state[1] = "OFF";
+                                        sendCommand( "OFF", "action2" );
+                                        var rom2 = document.getElementById("rom2");
+                                        rom2.src = "<%= asset_path('light_OFF_light.png') %>";
+                                        var light4 = document.getElementById("light4");
+                                        if (lamp_state[2] == "ON" && lamp_state[3] == "OFF") {
+                                            lamp_state[3] = "ON";
+                                            sendCommand( "ON", "s4" );
+                                            light4.src = "<%= asset_path('light_ON.png') %>";
+                                        }
+                                    }
+                                }
+                                </script>
+                    		</div>
+                		</div>
+                        <div class="col-lg-3">
+                            <input onclick="callItems()" type="button" id="myButton8"class="btn btn-primary" value="Get Items"></input>
+                            <script>
+                            function callItems() {
+                                getItems();
+                            }
+                            </script>
+                        </div>
+                </div>                        
+        </div>
+    </header>
+
+</body>
+<!-- Footer -->
+    <footer class="text-center">
+        <div class="footer-below">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        Copyright &copy; Cinnamon Bun 2016-2017
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script>
+        var lamp_state = new Array("OFF" ,"OFF", "OFF", "OFF");
+        var rom_state = new Array("OFF", "OFF");
+        function resetRom1() {
+            if(rom_state[0] == "ON") {
+                rom_state[0] = "OFF";
+                sendCommand( "OFF", "action1" );
+                var rom1 = document.getElementById("rom1");
+                rom1.src = "<%= asset_path('light_OFF_light.png') %>";
+            }
+        }
+        function resetRom2() {
+            if(rom_state[1] == "ON") {
+                rom_state[1] = "OFF";
+                sendCommand( "OFF", "action2" );
+                var rom2 = document.getElementById("rom2");
+                rom2.src = "<%= asset_path('light_OFF_light.png') %>";
+            }
+        }
+        function resetRomAll() {
+            resetRom1();
+            resetRom2();
+        }
+        function getItems()
+        {
+            var request = $.ajax ( {
+                type       : "GET",
+                url        : "http://localhost:3000/rest/getitems",
+                headers    : { "Accept": "txt/plain"},
+            });
+
+            request.done( function(data) { 
+                console.log( "Success: Status=" + data );
+            });
+
+            request.fail( function(jqXHR, textStatus ) { 
+                console.log( "Failure: " + textStatus );
+            });
+        }
+        function sendCommand( txtCommand, item ) {
+            var request = $.ajax ( {
+                type       : "POST",
+                url        : "http://localhost:3000/rest/sendcommand" ,
+                data       : item+" "+txtCommand,
+                headers    : { 'Content-Type': 'text/plain' },
+            });
+
+            request.done( function(data) { 
+                console.log( "Success: Status=" + data );
+            });
+
+            request.fail( function(jqXHR, textStatus ) { 
+                console.log( "Failure: " + textStatus );
+            });
+        }
+        function getState(item)
+        {
+            var request = $.ajax ( {
+                type       : "GET",
+                url        : "http://127.0.0.1:8181/rest/items/"+item+"/state",
+                data       : item,
+                headers    : { "Accept": "application/json" }
+            });
+
+            request.done( function(data) { 
+                console.log( "Success: Status=" + data );
+            });
+
+            request.fail( function(jqXHR, textStatus ) { 
+                console.log( "Failure: " + textStatus );
+            });
+        }
+        function setState( txtNewState, item ) {
+            var request = $.ajax
+            ({
+                type       : "PUT",
+                url        : "http://127.0.0.1:8181/rest/items/"+item+"/state",
+                data       : txtNewState, 
+                headers    : { "Content-Type": "text/plain" }
+            });
+
+            request.done( function(data) 
+            { 
+                console.log( "Success" );
+            });
+
+            request.fail( function(jqXHR, textStatus ) 
+            { 
+                console.log( "Failure: " + textStatus );
+            });
+        }
+        
+    </script>
+</html>   
