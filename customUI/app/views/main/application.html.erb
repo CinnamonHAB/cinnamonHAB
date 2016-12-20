@@ -270,7 +270,7 @@
         function showItems(items) {
             for(var i = 0; i <Object.keys(items).length; i++) {
                 if(items[i].type != "Group") {
-                    addItemToArray(items[i]);
+                    
                     var row = document.createElement("div");
                     row.setAttribute('class','row');
                     row.setAttribute('id', items[i].name);
@@ -304,7 +304,7 @@
                     var b = document.createElement('button');
                     b.setAttribute('class', 'btn btn-primary');
                     b.setAttribute('id', items[i].name+'button')
-                    b.setAttribute('onclick','switchIt(this.id,'+numDevices+')');
+                    b.setAttribute('onclick','switchIt(this.id,'+numItems+')');
                     b.innerHTML = 'Turn ON/OFF';
                     col3.appendChild(b);
 
@@ -312,16 +312,22 @@
                     
                     var lastItem = document.getElementById("devices");
                     devices.appendChild(row);
-                    numDevices++;
+                    addItemToArray(items[i]);
                 }
             }
         }
         //state, type, name, label, tags
         function addItemToArray(item) {
+            itemArray[numItems] = new Array();
             if(item.state == "NULL")
                 itemArray[numItems][0] = "OFF";
             else
                 itemArray[numItems][0] = item.state;
+            itemArray[numItems][1] = item.type;
+            itemArray[numItems][2] = item.name;
+            itemArray[numItems][3] = item.label;
+            itemArray[numItems][4] = item.tags;
+            numItems++;
         }
         function switchIt(buttonname, index) {
             var name = buttonname.split('button')[0];
