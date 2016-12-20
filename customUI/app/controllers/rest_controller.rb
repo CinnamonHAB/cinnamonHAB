@@ -7,11 +7,8 @@ class RestController < ApplicationController
 	res = Net::HTTP.start(url.host, url.port) {|http|
 	  http.request(req)
 	}
-  render plain: res.body
+  render json: res.body
 	end
-  	
-  	
-  end
   def openhab_sendcommand
   	data = "#{request.body.read}"
   	
@@ -25,6 +22,6 @@ class RestController < ApplicationController
 	req = Net::HTTP::POST.new(url.path, {'Content-Type' => 'text/plain'})
 	req.body = command
 	res = http.request(req)
-  	render text: res
+  render text: res
   end
 end

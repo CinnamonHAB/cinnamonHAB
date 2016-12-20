@@ -8,7 +8,7 @@ Things you may want to cover:
 Ruby version: 2.3.1
 gems:
 Rails version: 5.0.0.1
-bootstrap-sass 3.3.5
+bootstrap-sass 3.3.7
 
 Starting Server:
 bin/rails server

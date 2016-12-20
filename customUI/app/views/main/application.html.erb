@@ -196,6 +196,7 @@
                                 </script>
                     		</div>
                 		</div>
+                        <!--
                         <div class="col-lg-3">
                             <input onclick="callItems()" type="button" id="myButton8"class="btn btn-primary" value="Get Items"></input>
                             <script>
@@ -204,6 +205,7 @@
                             }
                             </script>
                         </div>
+                        -->
                 </div>                        
         </div>
     </header>
@@ -227,7 +229,7 @@
         var lamp_state = new Array("OFF" ,"OFF", "OFF", "OFF");
         var rom_state = new Array("OFF", "OFF");
         var numItems = 0;
-        var itemState = new Array();
+        var itemArray = new Array(); //state, type, name, label, tags
         function resetRom1() {
             if(rom_state[0] == "ON") {
                 rom_state[0] = "OFF";
@@ -268,7 +270,7 @@
         function showItems(items) {
             for(var i = 0; i <Object.keys(items).length; i++) {
                 if(items[i].type != "Group") {
-
+                    addItemToArray(items[i]);
                     var row = document.createElement("div");
                     row.setAttribute('class','row');
                     row.setAttribute('id', items[i].name);
@@ -302,23 +304,24 @@
                     var b = document.createElement('button');
                     b.setAttribute('class', 'btn btn-primary');
                     b.setAttribute('id', items[i].name+'button')
-                    console.log(items[i].name);
-                    b.setAttribute('onclick','switchIt(this.id,'+numItems+')');
+                    b.setAttribute('onclick','switchIt(this.id,'+numDevices+')');
                     b.innerHTML = 'Turn ON/OFF';
                     col3.appendChild(b);
 
                     row.appendChild(col3);
-                    if(items[i].state == "NULL")
-                        itemState[numItems] = "OFF";
-                    else
-                        itemState[numItems] = items[i].state;
-
+                    
                     var lastItem = document.getElementById("devices");
                     devices.appendChild(row);
-                    numItems++;
+                    numDevices++;
                 }
             }
-            
+        }
+        //state, type, name, label, tags
+        function addItemToArray(item) {
+            if(item.state == "NULL")
+                itemArray[numItems][0] = "OFF";
+            else
+                itemArray[numItems][0] = item.state;
         }
         function switchIt(buttonname, index) {
             var name = buttonname.split('button')[0];
