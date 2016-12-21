@@ -206,6 +206,14 @@
                             </script>
                         </div>
                         -->
+                        <div class="col-lg-3">
+                            <input onclick="tryCommand()" type="button" id="myButton8"class="btn btn-primary" value="Try Command"></input>
+                            <script>
+                            function tryCommand() {
+                                sendCommand("s1", "ON");
+                            }
+                            </script>
+                        </div>
                 </div>                        
         </div>
     </header>
@@ -260,7 +268,7 @@
 
             request.done( function(data) { 
                 console.log( "Success: Status=" + data );
-                showItems(JSON.parse(data));
+                showItems(data);
             });
 
             request.fail( function(jqXHR, textStatus ) { 
@@ -341,12 +349,12 @@
                 icon.src = "<%= asset_path('light_ON.png') %>";
             }
         }
-        function sendCommand( txtCommand, item ) {
+        function sendCommand( item, txtCommand ) {
             var request = $.ajax ( {
                 type       : "POST",
                 url        : "http://localhost:3000/rest/sendcommand" ,
                 data       : item+" "+txtCommand,
-                headers    : { 'Content-Type': 'text/plain' },
+                headers    : { 'Content-Type': 'text/plain', 'Accept': 'text/plain' },
             });
 
             request.done( function(data) { 
