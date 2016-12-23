@@ -3,6 +3,8 @@ Rails.application.routes.draw do
   get 'main/application'
   root 'main#application'
   match '/rest/getitems' => 'rest#openhab_getitems', via: :get
+  match '/rest/getstate' => 'rest#openhab_getstate', via: :get
+  match '/rest/updatestate' => 'rest#openhab_updatestate', via: :put
   match '/rest/sendcommand' => 'rest#openhab_sendcommand', via: :post
 
 

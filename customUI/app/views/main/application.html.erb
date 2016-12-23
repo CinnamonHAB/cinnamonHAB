@@ -234,10 +234,15 @@
     <script>
         document.body.onload = getItems();
 
-        var lamp_state = new Array("OFF" ,"OFF", "OFF", "OFF");
-        var rom_state = new Array("OFF", "OFF");
         var numItems = 0;
-        var itemArray = new Array(); //state, type, name, label, tags
+        var itemArray = new Array(); 
+        var itemClass = function (state, type, name, label, tags) {
+            this.state = state;
+            this.type = type;
+            this.name = name;
+            this.label = label;
+            this.tags = tags;
+        }
         function resetRom1() {
             if(rom_state[0] == "ON") {
                 rom_state[0] = "OFF";
@@ -268,86 +273,128 @@
 
             request.done( function(data) { 
                 console.log( "Success: Status=" + data );
-                showItems(data);
+                createItems(data);
             });
 
             request.fail( function(jqXHR, textStatus ) { 
                 console.log( "Failure: " + textStatus );
             });
         }
-        function showItems(items) {
+        function createItems(items) {
             for(var i = 0; i <Object.keys(items).length; i++) {
                 if(items[i].type != "Group") {
-                    
-                    var row = document.createElement("div");
-                    row.setAttribute('class','row');
-                    row.setAttribute('id', items[i].name);
-
-                    var col = document.createElement("div");
-                    col.setAttribute('class','col-lg-1');
-                    row.appendChild(col);
-
-                    var icon = document.createElement("img");
-                    icon.setAttribute('class','icon');
-                    icon.setAttribute('src','<%= asset_path('light_OFF_light.png') %>');
-                    icon.setAttribute('width','50');
-                    icon.setAttribute('height','50');
-                    icon.setAttribute('id', items[i].name+'icon')
-                    col.appendChild(icon);
-
-                    var col2 = document.createElement("div");
-                    col2.setAttribute('class','col-lg-2 intro-text');
-
-                    var item = document.createElement('span');
-                    item.innerHTML = items[i].label;
-                    item.setAttribute('class','skills');
-                    item.setAttribute('id', items[i].name+'label')
-                    col2.appendChild(item);
-
-                    row.appendChild(col2);
-
-                    var col3 = document.createElement("div");
-                    col3.setAttribute('class','col-lg-9');
-
-                    var b = document.createElement('button');
-                    b.setAttribute('class', 'btn btn-primary');
-                    b.setAttribute('id', items[i].name+'button')
-                    b.setAttribute('onclick','switchIt(this.id,'+numItems+')');
-                    b.innerHTML = 'Turn ON/OFF';
-                    col3.appendChild(b);
-
-                    row.appendChild(col3);
-                    
-                    var lastItem = document.getElementById("devices");
-                    devices.appendChild(row);
                     addItemToArray(items[i]);
+                    generateItemHTML(itemArray[numItems-1], numItems-1);                   
                 }
+            }
+        }
+        function generateItemHTML(item, index) {
+            var row = document.createElement("div");
+            row.setAttribute('class','row');
+            row.setAttribute('id', item.name);
+            var col = document.createElement("div");
+            col.setAttribute('class','col-lg-1');
+            var icon = generateIcon(item);
+            col.appendChild(icon);
+            row.appendChild(col);
+            var col2 = document.createElement("div");
+            col2.setAttribute('class','col-lg-2 intro-text');
+            var lab = generateLabel(item);
+            col2.appendChild(lab);
+            row.appendChild(col2);
+            var col3 = document.createElement("div");
+            col3.setAttribute('class','col-lg-9');
+            var b = generateButton(item, index);            
+            col3.appendChild(b);
+            row.appendChild(col3);
+            
+            var lastItem = document.getElementById("devices");
+            devices.appendChild(row);
+        }
+        function generateIcon(item) {
+            if(item.type == "Switch") {
+                var icon = document.createElement("img");
+                icon.setAttribute('class','icon');
+                icon.setAttribute('src','<%= asset_path('light_OFF_light.png') %>');
+                icon.setAttribute('width','50');
+                icon.setAttribute('height','50');
+                icon.setAttribute('id', item.name+'icon')
+                return icon;
+            }else {
+                //TEMPORARY
+                var icon = document.createElement("img");
+                icon.setAttribute('class','icon');
+                icon.setAttribute('src','<%= asset_path('light_OFF_light.png') %>');
+                icon.setAttribute('width','50');
+                icon.setAttribute('height','50');
+                icon.setAttribute('id', item.name+'icon')
+                return icon;
+            }
+        }
+        function generateLabel(item) {
+            var lab = document.createElement('span');
+            lab.innerHTML = item.label;
+            lab.setAttribute('class','skills');
+            lab.setAttribute('id', item.name+'label')
+            return lab;
+        }
+        function generateButton(item, index) {
+            if(item.type == "Switch") {
+                var b = document.createElement('button');
+                b.setAttribute('class', 'btn btn-primary');
+                b.setAttribute('id', item.name+'button')
+                b.setAttribute('onclick','switchIt(this.id,'+index+')');
+                b.innerHTML = 'Turn ON/OFF';
+                return b;
+            }else {
+                //TEMPORARY
+                var b = document.createElement('button');
+                b.setAttribute('class', 'btn btn-primary');
+                b.setAttribute('id', item.name+'button')
+                b.setAttribute('onclick','switchIt(this.id,'+index+')');
+                b.innerHTML = 'Turn ON/OFF';
+                return b;
             }
         }
         //state, type, name, label, tags
         function addItemToArray(item) {
-            itemArray[numItems] = new Array();
-            if(item.state == "NULL")
-                itemArray[numItems][0] = "OFF";
+            if(item.state == "NULL") {
+                itemArray[numItems] = new itemClass("OFF", item.type, item.name, item.label, item.tags);
+                updateState(itemArray[numItems].name, itemArray[numItems].state);
+            }
             else
-                itemArray[numItems][0] = item.state;
-            itemArray[numItems][1] = item.type;
-            itemArray[numItems][2] = item.name;
-            itemArray[numItems][3] = item.label;
-            itemArray[numItems][4] = item.tags;
+                itemArray[numItems] = new itemClass(item.state, item.type, item.name, item.label, item.tags);
             numItems++;
         }
         function switchIt(buttonname, index) {
             var name = buttonname.split('button')[0];
             var icon = document.getElementById(name+"icon");
-            if (itemState[index] == "ON") {
-                itemState[index] = "OFF";
+            if (itemArray[index].state == "ON") {
+                itemArray[index].state = "OFF";
                 icon.src = "<%= asset_path('light_OFF_light.png') %>";
             }
             else {
-                itemState[index] = "ON";
+                itemArray[index].state = "ON";
                 icon.src = "<%= asset_path('light_ON.png') %>";
             }
+            updateState(itemArray[index].name, itemArray[index].state);
+            sendCommand(itemArray[index].name, itemArray[index].state);
+        }
+        function updateState( item, txtNewState ) {
+            var request = $.ajax ( {
+                type       : "PUT",
+                url        : "http://localhost:3000/rest/updatestate" ,
+                data       : item+" "+txtNewState,
+                headers    : { 'Content-Type': 'text/plain', 'Accept': 'text/plain' },
+            });
+
+            request.done( function(data) { 
+                console.log( "Success: Status=" + data );
+            });
+
+            request.fail( function(jqXHR, textStatus ) { 
+                console.log( "Failure: " + textStatus );
+            });
         }
         function sendCommand( item, txtCommand ) {
             var request = $.ajax ( {
@@ -369,9 +416,9 @@
         {
             var request = $.ajax ( {
                 type       : "GET",
-                url        : "http://127.0.0.1:8181/rest/items/"+item+"/state",
+                url        : "localhost:3000/rest/getstate",
                 data       : item,
-                headers    : { "Accept": "application/json" }
+                headers    : { "Accept": "text/plain"},
             });
 
             request.done( function(data) { 
@@ -382,25 +429,7 @@
                 console.log( "Failure: " + textStatus );
             });
         }
-        function setState( txtNewState, item ) {
-            var request = $.ajax
-            ({
-                type       : "PUT",
-                url        : "http://127.0.0.1:8181/rest/items/"+item+"/state",
-                data       : txtNewState, 
-                headers    : { "Content-Type": "text/plain" }
-            });
-
-            request.done( function(data) 
-            { 
-                console.log( "Success" );
-            });
-
-            request.fail( function(jqXHR, textStatus ) 
-            { 
-                console.log( "Failure: " + textStatus );
-            });
-        }
+        
         
     </script>
 </html>   
