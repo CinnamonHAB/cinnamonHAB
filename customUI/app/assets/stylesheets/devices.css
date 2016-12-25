@@ -1,4 +1,24 @@
-
+.clickable {
+    border: 1px solid #333;
+    background: #18BC9C;
+    height: 20px;
+    width: 200px;
+    margin: 15px;
+    position: relative;
+}
+.display {
+    height: 16px;
+    position: absolute;
+    width: 100%;
+}
+.progress {
+    position:absolute;
+    left:0;
+    top:0;
+    background:#286090;
+    height:20px;
+    width:50px;
+}
 body {
   font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   overflow-x: hidden;

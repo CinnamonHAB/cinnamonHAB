@@ -315,7 +315,23 @@
             if(item.type == "Switch") {
                 var icon = document.createElement("img");
                 icon.setAttribute('class','icon');
-                icon.setAttribute('src','<%= asset_path('light_OFF_light.png') %>');
+                if(item.label.includes("Light")) {
+                    if(item.state == "OFF")
+                        icon.setAttribute('src','<%= asset_path('light_OFF_light.png') %>');
+                    else
+                        icon.setAttribute('src','<%= asset_path('light_ON.png') %>');
+                }
+                else if(item.label.includes("TV")) {
+                    if(item.state == "OFF")
+                        icon.setAttribute('src','<%= asset_path('tv_OFF.png') %>');
+                    else
+                        icon.setAttribute('src','<%= asset_path('tv_ON.png') %>');
+                }else { //Temporary
+                    if(item.state == "OFF")
+                        icon.setAttribute('src','<%= asset_path('light_OFF_light.png') %>');
+                    else
+                        icon.setAttribute('src','<%= asset_path('light_ON.png') %>');
+                }                
                 icon.setAttribute('width','50');
                 icon.setAttribute('height','50');
                 icon.setAttribute('id', item.name+'icon')
@@ -346,6 +362,27 @@
                 b.setAttribute('onclick','switchIt(this.id,'+index+')');
                 b.innerHTML = 'Turn ON/OFF';
                 return b;
+            }else if(item.type == "Dimmer") {
+                var div = document.createElement('div');
+                div.setAttribute('class', 'clickable');
+                var div2 = document.createElement('div');
+                div2.setAttribute('class', 'display');
+                var div3 = document.createElement('div');
+                div3.setAttribute('class', 'progress');
+                div2.appendChild(div3);
+                div.appendChild(div2);
+
+                $('.clickable').bind('click', function (ev) {
+                    var $div = $(ev.target);
+                    var $display = $div.find('.display');
+
+                    var offset = $div.offset();
+                    var x = ev.clientX - offset.left;
+
+                    $('.progress').width(x);
+                });
+
+                return div;
             }else {
                 //TEMPORARY
                 var b = document.createElement('button');
@@ -371,11 +408,21 @@
             var icon = document.getElementById(name+"icon");
             if (itemArray[index].state == "ON") {
                 itemArray[index].state = "OFF";
-                icon.src = "<%= asset_path('light_OFF_light.png') %>";
+                if(itemArray[index].label.includes("Light")) {
+                    icon.src = "<%= asset_path('light_OFF_light.png') %>";
+                }else if (itemArray[index].label.includes("TV")) {
+                    icon.src = "<%= asset_path('tv_OFF.png') %>";
+                }else //TEMPORARY
+                    icon.src = "<%= asset_path('light_OFF_light.png') %>";
             }
             else {
                 itemArray[index].state = "ON";
-                icon.src = "<%= asset_path('light_ON.png') %>";
+                if(itemArray[index].label.includes("Light")) {
+                    icon.src = "<%= asset_path('light_ON.png') %>";
+                }else if (itemArray[index].label.includes("TV")) {
+                    icon.src = "<%= asset_path('tv_ON.png') %>";
+                }else //TEMPORARY
+                    icon.src = "<%= asset_path('light_ON.png') %>";
             }
             updateState(itemArray[index].name, itemArray[index].state);
             sendCommand(itemArray[index].name, itemArray[index].state);
