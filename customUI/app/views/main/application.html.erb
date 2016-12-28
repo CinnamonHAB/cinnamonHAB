@@ -25,196 +25,29 @@
 <body id="page-top" class="index">
     <!-- Navigation -->
     <nav id="mainNav" class="aux navbar-custom">
-        <div class="container">
+        <div class="container-fluid">
             <div class="navbar-header page-scroll">
-                <a class="navbar-brand">cinnamon bun</a>
+                <a class="navbar-brand">CinnamonHAB</a>
             </div>
         </div>
     </nav>
     <!-- Header -->
     <header>
         <div class="container">
-                <div class="row" id="devices">
-                    <div class="intro-text">
-                        <span class="name">Devices</span>
+            <div class="row">
+                <div class="col-lg-7 intro-text">
+                    <span class="name" id="devices">Devices</span>
+                </div>
+                <div class="col-lg-5 intro-text">
+                    <div class="row">
+                        <span class="name" id="controls">Controls</span>                       
+                    </div>
+                    <div class="row">
+                        <span class="name" id="modes">Modes</span>                       
                     </div>
                 </div>
-                <div class="row">
-                	<div class="col-lg-2">
-                		<div class="intro-text">
-                			<span class="skills">Room 1</span>
-                		</div>
-                	</div>
-                </div>
-                <div class="row">
-                	<div class="col-lg-2">
-                		<div class="intro-text">
-                			<span class="skills">Room 2</span>
-                		</div>
-                	</div>
-                </div>
-                 <div class="row">
-                 		<div class="col-lg-1">
-                			<img id="light5" src="<%= asset_path('light_green.png') %>"width="50" height="50">
-                		</div>
-               			<div class="col-lg-2">
-                    		<div class="intro-text">
-                      		  <span class="skills">All lights</span>
-                    		</div>
-               		 	</div>
-                		<div class="col-lg-2">
-                			<div class="intro-text">
-                				<input onclick="allON()" type="button" id="myButton5"class="btn btn-primary" value="Lights ON"></input>
-                                <script>
-                                    function allON() {
-                                        resetRomAll();
-                                        for (var i=0;i < lamp_state.length;i++) {
-                                            if(lamp_state[i] == "OFF") {
-                                                lamp_state[i] = "ON";
-                                                sendCommand( "ON", "s"+(i+1).toString() );
-                                                var light = document.getElementById("light"+(i+1).toString());
-                                                light.src = "<%= asset_path('light_ON.png') %>";
-                                            }
-                                        }
-                                    }
-                                </script>
-                    		</div>
-                		</div>
-                        <div class="col-lg-2">
-                            <div class="intro-text">
-                                <input onclick="allOFF()" type="button" id="myButton6"class="btn btn-primary" value="Lights OFF"></input>
-                                <script>
-                                    function allOFF() {
-                                        resetRomAll();
-                                        for (var i=0;i < lamp_state.length;i++) {
-                                            if(lamp_state[i] == "ON") {
-                                                lamp_state[i] = "OFF";
-                                                sendCommand( "OFF", "s"+(i+1).toString() );
-                                                var light = document.getElementById("light"+(i+1).toString());
-                                                light.src = "<%= asset_path('light_OFF_light.png') %>";
-                                            }
-                                        }
-                                    }
-                                </script>
-                            </div>
-
-                        </div>
-                </div>
-                <div class="row">
-                	<div class="intro-text">
-                        <span class="name">Modes</span>
-                    </div>
-                </div>
-                	 <div class="row">
-                	 	<div class="col-lg-1">
-                			<img src="<%= asset_path('heart.png') %>"width="50" height="50">
-                		</div>
-               			<div class="col-lg-2">
-                    		<div class="intro-text">
-                      		  <span class="skills">Romantic</span>
-                    		</div>
-               		 	</div>
-                        <div class="col-lg-2">
-                            <img id="rom1" src="<%= asset_path('light_OFF_light.png') %>"width="50" height="50">
-                        </div>
-                		<div class="col-lg-2">
-                			<div class="intro-text">
-                				<input onclick="rom1()" type="button" id="myButton6"class="btn btn-primary" value="Room 1 ON/OFF"></input>
-                        		<script>
-                        		function rom1() {
-                                    if(rom_state[0] == "OFF") {
-                                        rom_state[0] = "ON";
-                                        sendCommand( "ON", "action1" );
-                                        var rom1 = document.getElementById("rom1");
-                                        rom1.src = "<%= asset_path('light_ON.png') %>";
-                                        var light1 = document.getElementById("light1");
-                                        var light2 = document.getElementById("light2");
-                                        if (lamp_state[0] == "OFF") {
-                                            lamp_state[0] = "ON";
-                                            sendCommand( "ON", "s1" );
-                                            light1.src = "<%= asset_path('light_ON.png') %>";
-                                        }
-                                        if (lamp_state[1] == "ON") {
-                                            lamp_state[1] = "OFF";
-                                            sendCommand( "OFF", "s2" );
-                                            light2.src = "<%= asset_path('light_OFF_light.png') %>";
-                                        }
-                                    }else {
-                                        rom_state[0] = "OFF";
-                                        sendCommand( "OFF", "action1" );
-                                        var rom1 = document.getElementById("rom1");
-                                        rom1.src = "<%= asset_path('light_OFF_light.png') %>";
-                                        var light2 = document.getElementById("light2");
-                                        if (lamp_state[0] == "ON" && lamp_state[1] == "OFF") {
-                                            lamp_state[1] = "ON";
-                                            sendCommand( "ON", "s2" );
-                                            light2.src = "<%= asset_path('light_ON.png') %>";
-                                        }
-                                    }
-    							}
-                        		</script>
-                    		</div>
-                		</div>
-                        <div class="col-lg-2">
-                            <img id="rom2" src="<%= asset_path('light_OFF_light.png') %>"width="50" height="50">
-                        </div>
-                		<div class="col-lg-2">
-                			<div class="intro-text">
-                				<input onclick="rom2()" type="button" id="myButton7"class="btn btn-primary" value="Room 2 ON/OFF"></input>
-                                <script>
-                                function rom2() {
-                                    if(rom_state[1] == "OFF") {
-                                        rom_state[1] = "ON";
-                                        sendCommand( "ON", "action2" );
-                                        var rom2 = document.getElementById("rom2");
-                                        rom2.src = "<%= asset_path('light_ON.png') %>";
-                                        var light3 = document.getElementById("light3");
-                                        var light4 = document.getElementById("light4");
-                                        if (lamp_state[2] == "OFF") {
-                                            lamp_state[2] = "ON";
-                                            sendCommand( "ON", "s3" );
-                                            light3.src = "<%= asset_path('light_ON.png') %>";
-                                        }
-                                        if (lamp_state[3] == "ON") {
-                                            lamp_state[3] = "OFF";
-                                            sendCommand( "OFF", "s4" );
-                                            light4.src = "<%= asset_path('light_OFF_light.png') %>";
-                                        }
-                                    }else {
-                                        rom_state[1] = "OFF";
-                                        sendCommand( "OFF", "action2" );
-                                        var rom2 = document.getElementById("rom2");
-                                        rom2.src = "<%= asset_path('light_OFF_light.png') %>";
-                                        var light4 = document.getElementById("light4");
-                                        if (lamp_state[2] == "ON" && lamp_state[3] == "OFF") {
-                                            lamp_state[3] = "ON";
-                                            sendCommand( "ON", "s4" );
-                                            light4.src = "<%= asset_path('light_ON.png') %>";
-                                        }
-                                    }
-                                }
-                                </script>
-                    		</div>
-                		</div>
-                        <!--
-                        <div class="col-lg-3">
-                            <input onclick="callItems()" type="button" id="myButton8"class="btn btn-primary" value="Get Items"></input>
-                            <script>
-                            function callItems() {
-                                getItems();
-                            }
-                            </script>
-                        </div>
-                        -->
-                        <div class="col-lg-3">
-                            <input onclick="tryCommand()" type="button" id="myButton8"class="btn btn-primary" value="Try Command"></input>
-                            <script>
-                            function tryCommand() {
-                                sendCommand("s1", "ON");
-                            }
-                            </script>
-                        </div>
-                </div>                        
+            </div>
+                                   
         </div>
     </header>
 
@@ -225,7 +58,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
-                        Copyright &copy; Cinnamon Bun 2016-2017
+                        Copyright &copy; CinnamonHAB 2016-2017
                     </div>
                 </div>
             </div>
@@ -233,36 +66,24 @@
     </footer>
     <script>
         document.body.onload = getItems();
-
-        var numItems = 0;
-        var itemArray = new Array(); 
-        var itemClass = function (state, type, name, label, tags) {
+        var itemClass = function (state, type, name, label, tags, groupNames) {
             this.state = state;
             this.type = type;
             this.name = name;
             this.label = label;
             this.tags = tags;
+            this.groupNames = groupNames;
         }
-        function resetRom1() {
-            if(rom_state[0] == "ON") {
-                rom_state[0] = "OFF";
-                sendCommand( "OFF", "action1" );
-                var rom1 = document.getElementById("rom1");
-                rom1.src = "<%= asset_path('light_OFF_light.png') %>";
-            }
-        }
-        function resetRom2() {
-            if(rom_state[1] == "ON") {
-                rom_state[1] = "OFF";
-                sendCommand( "OFF", "action2" );
-                var rom2 = document.getElementById("rom2");
-                rom2.src = "<%= asset_path('light_OFF_light.png') %>";
-            }
-        }
-        function resetRomAll() {
-            resetRom1();
-            resetRom2();
-        }
+        var deviceArray = new Array();
+        var controlArray = new Array();
+        var modeArray = new Array();
+        var numDevices = 0;
+        var numControls = 0;
+        var numModes = 0;
+
+        var numLights = 0;
+        var numLightsOn = 0;
+        
         function getItems()
         {
             var request = $.ajax ( {
@@ -270,96 +91,230 @@
                 url        : "http://localhost:3000/rest/getitems",
                 headers    : { "Accept": "text/plain"},
             });
-
             request.done( function(data) { 
                 console.log( "Success: Status=" + data );
-                createItems(data);
+                create(data);
             });
-
             request.fail( function(jqXHR, textStatus ) { 
                 console.log( "Failure: " + textStatus );
             });
         }
-        function createItems(items) {
-            for(var i = 0; i <Object.keys(items).length; i++) {
-                if(items[i].type != "Group") {
-                    addItemToArray(items[i]);
-                    generateItemHTML(itemArray[numItems-1], numItems-1);                   
+        function create(data) {
+            for(var i = 0; i <Object.keys(data).length; i++) {
+                if(data[i].type == "Group") {
+                    
+                }else {
+                    if(data[i].name.includes("action")) {
+                        if(data[i].label.includes("Mode") || data[i].label.includes("mode")) {
+                            addModeToArray(data[i]);
+                            generateModeHTML(modeArray[numModes-1], numModes-1);
+                        }else {
+                            addControlToArray(data[i]);
+                            generateControlHTML(controlArray[numControls-1], numControls-1);
+                        }
+                    }else {
+                        addDeviceToArray(data[i]);
+                        generateDeviceHTML(deviceArray[numDevices-1], numDevices-1);                   
+                    }
                 }
             }
         }
-        function generateItemHTML(item, index) {
+        //state, type, name, label, tags, groupNames
+        function addModeToArray(mode) {
+            if(mode.state == "NULL") {
+                modeArray[numModes] = new itemClass("OFF", mode.type, mode.name, mode.label, mode.tags, mode.groupNames);
+                updateState(modeArray[numModes].name, modeArray[numModes].state);
+            }
+            else
+                modeArray[numModes] = new itemClass(mode.state, mode.type, mode.name, mode.label, mode.tags, mode.groupNames);
+            numModes++;
+        }
+        //state, type, name, label, tags, groupNames
+        function addControlToArray(control) {
+            if(control.state == "NULL") {
+                controlArray[numControls] = new itemClass("OFF", control.type, control.name, control.label, control.tags, control.groupNames);
+                updateState(controlArray[numControls].name, controlArray[numControls].state);
+            }
+            else
+                controlArray[numControls] = new itemClass(control.state, control.type, control.name, control.label, control.tags, control.groupNames);
+            numControls++;
+        }
+        //state, type, name, label, tags, groupNames
+        function addDeviceToArray(device) {
+            if(device.state == "NULL") {
+                deviceArray[numDevicess] = new itemClass("OFF", device.type, device.name, device.label, device.tags, device.groupNames);
+                updateState(deviceArray[numDevices].name, deviceArray[numDevices].state);
+            }
+            else
+                deviceArray[numDevices] = new itemClass(device.state, device.type, device.name, device.label, device.tags, device.groupNames);
+            numDevices++;
+            if(isLight(device)) {
+                numLights++;
+                if(isDeviceOn(device)) {
+                    numLightsOn++;
+                }
+            }
+        }
+        function isLight(device) {
+            if(device.label.includes("Light"))
+                return true;
+            else
+                return false;
+        }
+        function isDeviceOn(device) {
+            if(device.state == "ON")
+                return true;
+            else
+                return false;
+        }
+        function generateModeHTML(mode, index) {
             var row = document.createElement("div");
             row.setAttribute('class','row');
-            row.setAttribute('id', item.name);
+            row.setAttribute('id', mode.name);
             var col = document.createElement("div");
-            col.setAttribute('class','col-lg-1');
-            var icon = generateIcon(item);
+            col.setAttribute('class','col-lg-2');
+            var icon = generateIcon("mode", mode);
             col.appendChild(icon);
             row.appendChild(col);
             var col2 = document.createElement("div");
-            col2.setAttribute('class','col-lg-2 intro-text');
-            var lab = generateLabel(item);
+            col2.setAttribute('class','col-lg-7');
+            var lab = generateLabel(mode);
             col2.appendChild(lab);
             row.appendChild(col2);
             var col3 = document.createElement("div");
-            col3.setAttribute('class','col-lg-9');
-            var b = generateButton(item, index);            
+            col3.setAttribute('class','col-lg-3');
+            var b = generateFunctionButton("mode", mode, index);            
+            col3.appendChild(b);
+            row.appendChild(col3);
+            
+            var lastItem = document.getElementById("modes");
+            modes.appendChild(row);
+        }
+        function generateControlHTML(control, index) {
+            var row = document.createElement("div");
+            row.setAttribute('class','row');
+            row.setAttribute('id', control.name);
+            var col = document.createElement("div");
+            col.setAttribute('class','col-lg-2');
+            var icon = generateIcon("control", control);
+            col.appendChild(icon);
+            row.appendChild(col);
+            var col2 = document.createElement("div");
+            col2.setAttribute('class','col-lg-7');
+            var lab = generateLabel(control);
+            col2.appendChild(lab);
+            row.appendChild(col2);
+            var col3 = document.createElement("div");
+            col3.setAttribute('class','col-lg-3');
+            var b = generateFunctionButton("control", control, index);            
+            col3.appendChild(b);
+            row.appendChild(col3);
+            
+            var lastItem = document.getElementById("controls");
+            controls.appendChild(row);
+        }
+        function generateDeviceHTML(device, index) {
+            var row = document.createElement("div");
+            row.setAttribute('class','row');
+            row.setAttribute('id', device.name);
+            var col = document.createElement("div");
+            col.setAttribute('class','col-lg-1');
+            var icon = generateIcon("device", device);
+            col.appendChild(icon);
+            row.appendChild(col);
+            var col2 = document.createElement("div");
+            col2.setAttribute('class','col-lg-4');
+            var lab = generateLabel(device);
+            col2.appendChild(lab);
+            row.appendChild(col2);
+            var col3 = document.createElement("div");
+            col3.setAttribute('class','col-lg-3');
+            var b = generateFunctionButton("device", device, index);            
             col3.appendChild(b);
             row.appendChild(col3);
             
             var lastItem = document.getElementById("devices");
             devices.appendChild(row);
         }
-        function generateIcon(item) {
-            if(item.type == "Switch") {
-                var icon = document.createElement("img");
-                icon.setAttribute('class','icon');
-                if(item.label.includes("Light")) {
-                    if(item.state == "OFF")
-                        icon.setAttribute('src','<%= asset_path('light_OFF_light.png') %>');
-                    else
-                        icon.setAttribute('src','<%= asset_path('light_ON.png') %>');
+        function generateIcon(type,item) {
+            if(type == "device" || type == "control") {
+                if(item.type == "Switch") {
+                    var icon = document.createElement("img");
+                    icon.setAttribute('class','icon');
+                    if(item.label.includes("Light")) {
+                        if(item.state == "OFF")
+                            icon.setAttribute('src','<%= asset_path('light_OFF_light.png') %>');
+                        else
+                            icon.setAttribute('src','<%= asset_path('light_ON.png') %>');
+
+                    }
+                    else if(item.label.includes("TV")) {
+                        if(item.state == "OFF")
+                            icon.setAttribute('src','<%= asset_path('tv_OFF.png') %>');
+                        else
+                            icon.setAttribute('src','<%= asset_path('tv_ON.png') %>');
+                    }else { //Temporary
+                        if(item.state == "OFF")
+                            icon.setAttribute('src','<%= asset_path('light_OFF_light.png') %>');
+                        else
+                            icon.setAttribute('src','<%= asset_path('light_ON.png') %>');
+                    }                
+                    icon.setAttribute('width','50');
+                    icon.setAttribute('height','50');
+                    icon.setAttribute('id', item.name+'icon')
+                    return icon;
+                }else {
+                    //TEMPORARY
+                    var icon = document.createElement("img");
+                    icon.setAttribute('class','icon');
+                    icon.setAttribute('src','<%= asset_path('light_OFF_light.png') %>');
+                    icon.setAttribute('width','50');
+                    icon.setAttribute('height','50');
+                    icon.setAttribute('id', item.name+'icon')
+                    return icon;
                 }
-                else if(item.label.includes("TV")) {
-                    if(item.state == "OFF")
-                        icon.setAttribute('src','<%= asset_path('tv_OFF.png') %>');
-                    else
-                        icon.setAttribute('src','<%= asset_path('tv_ON.png') %>');
-                }else { //Temporary
-                    if(item.state == "OFF")
-                        icon.setAttribute('src','<%= asset_path('light_OFF_light.png') %>');
-                    else
-                        icon.setAttribute('src','<%= asset_path('light_ON.png') %>');
-                }                
-                icon.setAttribute('width','50');
-                icon.setAttribute('height','50');
-                icon.setAttribute('id', item.name+'icon')
-                return icon;
             }else {
-                //TEMPORARY
-                var icon = document.createElement("img");
-                icon.setAttribute('class','icon');
-                icon.setAttribute('src','<%= asset_path('light_OFF_light.png') %>');
-                icon.setAttribute('width','50');
-                icon.setAttribute('height','50');
-                icon.setAttribute('id', item.name+'icon')
-                return icon;
+                if(item.label.includes("Romantic")) {
+                    var icon = document.createElement("img");
+                    icon.setAttribute('class', 'icon');
+                    if(item.state == "OFF")
+                            icon.setAttribute('src','<%= asset_path('heart_OFF.png') %>');
+                        else
+                            icon.setAttribute('src','<%= asset_path('heart_ON.png') %>');
+                    icon.setAttribute('width','50');
+                    icon.setAttribute('height','50');
+                    icon.setAttribute('id', item.name+'icon')
+                    return icon;
+                }else { //TEMPORARY
+                    var icon = document.createElement("img");
+                    icon.setAttribute('class', 'icon');
+                    icon.setAttribute('src', '<%= asset_path('heart_ON.png') %>');
+                    icon.setAttribute('width','50');
+                    icon.setAttribute('height','50');
+                    icon.setAttribute('id', item.name+'icon')
+                    return icon;
+                }
             }
         }
         function generateLabel(item) {
             var lab = document.createElement('span');
             lab.innerHTML = item.label;
-            lab.setAttribute('class','skills');
+            lab.setAttribute('class','labels');
             lab.setAttribute('id', item.name+'label')
             return lab;
         }
-        function generateButton(item, index) {
+        function generateFunctionButton(type, item, index) {
             if(item.type == "Switch") {
                 var b = document.createElement('button');
                 b.setAttribute('class', 'btn btn-primary');
                 b.setAttribute('id', item.name+'button')
-                b.setAttribute('onclick','switchIt(this.id,'+index+')');
+                if(type == "control") {
+                    b.setAttribute('onclick', 'allLamps('+index+')');
+                }else if (type == "mode") {
+                    b.setAttribute('onclick', 'romanticMode('+index+')');
+                }else {
+                    b.setAttribute('onclick','switchIt('+index+')');
+                }
                 b.innerHTML = 'Turn ON/OFF';
                 return b;
             }else if(item.type == "Dimmer") {
@@ -393,39 +348,115 @@
                 return b;
             }
         }
-        //state, type, name, label, tags
-        function addItemToArray(item) {
-            if(item.state == "NULL") {
-                itemArray[numItems] = new itemClass("OFF", item.type, item.name, item.label, item.tags);
-                updateState(itemArray[numItems].name, itemArray[numItems].state);
+
+        function allLamps(index) {
+            for(var i=0; i< numDevices;i++) {
+                if(isLight(deviceArray[i])) {
+                    var icon = document.getElementById(deviceArray[i].name+"icon");
+                    if(controlArray[index].state == "ON") {
+                        if(isDeviceOn(deviceArray[i])) {
+                            icon.src = "<%= asset_path('light_OFF_light.png') %>";
+                            deviceArray[i].state = "OFF";
+                            numLightsOn--;
+                        }
+                    }
+                    else {
+                        if(!isDeviceOn(deviceArray[i])) {
+                            icon.src = "<%= asset_path('light_ON.png') %>";
+                            deviceArray[i].state = "ON";
+                            numLightsOn++;
+                        }
+                    }
+                    updateState(deviceArray[i].name, deviceArray[i].state);
+                    sendCommand(deviceArray[i].name, deviceArray[i].state);
+                }
             }
-            else
-                itemArray[numItems] = new itemClass(item.state, item.type, item.name, item.label, item.tags);
-            numItems++;
+            var icon = document.getElementById(controlArray[index].name+"icon");
+            if(controlArray[index].state == "ON") {
+                controlArray[index].state = "OFF";
+                icon.src = "<%= asset_path('light_OFF_light.png') %>";
+            }
+            else {
+                controlArray[index].state = "ON";
+                icon.src = "<%= asset_path('light_ON.png') %>";
+            }
         }
-        function switchIt(buttonname, index) {
-            var name = buttonname.split('button')[0];
-            var icon = document.getElementById(name+"icon");
-            if (itemArray[index].state == "ON") {
-                itemArray[index].state = "OFF";
-                if(itemArray[index].label.includes("Light")) {
+        function turnOffAllLightsControl() {
+            for(var i=0; i< numControls;i++) {
+                if(controlArray[i].label == "All Lights") {
+                    if(controlArray[i].state == "ON") {
+                        controlArray[i].state = "OFF";
+                        var icon = document.getElementById(controlArray[i].name+"icon");
+                        icon.src = "<%= asset_path('light_OFF_light.png') %>";
+                        updateState(controlArray[i].name, controlArray[i].state);
+                        break;
+                    }
+                }
+            }
+        }
+        function turnOnAllLightsControl() {
+            for(var i=0; i< numControls;i++) {
+                if(controlArray[i].label == "All Lights") {
+                    if(controlArray[i].state == "OFF") {
+                        controlArray[i].state = "ON";
+                        var icon = document.getElementById(controlArray[i].name+"icon");
+                        icon.src = "<%= asset_path('light_ON.png') %>";
+                        updateState(controlArray[i].name, controlArray[i].state);
+                        break;
+                    }
+                }
+            }
+        }
+
+        function romanticMode(index) {
+            for(var i=0; i< numDevices;i++) {
+                if(deviceArray[i].label.includes("Light")) {
+                    var icon = document.getElementById(deviceArray[i].name+"icon");
+                    if(modeArray[index].state == "ON")
+                        icon.src = "<%= asset_path('light_OFF_light.png') %>";
+                    else
+                        icon.src = "<%= asset_path('light_ON.png') %>";
+                }else if(deviceArray[i].label.includes("TV")) {
+                    var icon = document.getElementById(deviceArray[i].name+"icon");
+                    if(modeArray[index].state == "ON")
+                        icon.src = "<%= asset_path('tv_OFF.png') %>";
+                    else
+                        icon.src = "<%= asset_path('tv_ON.png') %>";
+                }
+            }
+            if(modeArray[index].state == "ON")
+                modeArray[index].state = "OFF";
+            else
+                modeArray[index].state = "ON";
+        }
+        
+        function switchIt(index) {
+            var icon = document.getElementById(deviceArray[index].name+"icon");
+            if (deviceArray[index].state == "ON") {
+                deviceArray[index].state = "OFF";
+                if(deviceArray[index].label.includes("Light")) {
                     icon.src = "<%= asset_path('light_OFF_light.png') %>";
-                }else if (itemArray[index].label.includes("TV")) {
+                    numLightsOn--;
+                    turnOffAllLightsControl();
+                }else if (deviceArray[index].label.includes("TV")) {
                     icon.src = "<%= asset_path('tv_OFF.png') %>";
                 }else //TEMPORARY
                     icon.src = "<%= asset_path('light_OFF_light.png') %>";
             }
             else {
-                itemArray[index].state = "ON";
-                if(itemArray[index].label.includes("Light")) {
+                deviceArray[index].state = "ON";
+                if(deviceArray[index].label.includes("Light")) {
                     icon.src = "<%= asset_path('light_ON.png') %>";
-                }else if (itemArray[index].label.includes("TV")) {
+                    numLightsOn++;
+                    if(numLightsOn == numLights)
+                        turnOnAllLightsControl();
+                }else if (deviceArray[index].label.includes("TV")) {
                     icon.src = "<%= asset_path('tv_ON.png') %>";
                 }else //TEMPORARY
                     icon.src = "<%= asset_path('light_ON.png') %>";
             }
-            updateState(itemArray[index].name, itemArray[index].state);
-            sendCommand(itemArray[index].name, itemArray[index].state);
+            updateState(deviceArray[index].name, deviceArray[index].state);
+            sendCommand(deviceArray[index].name, deviceArray[index].state);
         }
         function updateState( item, txtNewState ) {
             var request = $.ajax ( {

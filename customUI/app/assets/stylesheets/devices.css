@@ -171,6 +171,10 @@ header .intro-text .skills {
   }
 }
 
+.labels {
+  font-size: 25px;
+}
+
 footer {
   color: white;
 }

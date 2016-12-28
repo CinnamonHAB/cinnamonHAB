@@ -54,11 +54,12 @@ class RestController < ApplicationController
     render plain: res.code
   end
   
-  def openhab_addItem
+  def openhab_addorupdateitem
     require 'net/http'
     require 'uri'
 
     data = "#{request.body.read}" 
+
     
     uri = URI.parse('http://localhost/rest/items/')
     req = Net::HTTP::Put.new(uri.to_s,{'Content-Type' => 'text/plain'})
@@ -73,11 +74,9 @@ class RestController < ApplicationController
     require 'net/http'
     require 'uri'
     
-    data = "#{request.body.read}" 
-    dataArray = data.split(' ')
-    item = dataArray[0]
+    item = "#{request.body.read}"
     
-    uri = URI.parse('http://localhost/rest/items/'+item+'/')
+    uri = URI.parse('http://localhost/rest/items/'+item)
     
     req = Net::HTTP::Delete.new(uri.to_s)
     
@@ -90,11 +89,9 @@ class RestController < ApplicationController
   def openhab_getItem
     require 'net/http'
     
-    data = "#{request.body.read}" 
-    dataArray = data.split(' ')
-    item = dataArray[0]
+    item = "#{request.body.read}" 
     
-  	uri = URI.parse('http://localhost/rest/items'+item+'/')
+  	uri = URI.parse('http://localhost/rest/items'+item)
   	req = Net::HTTP::Get.new(uri.to_s)
   	res = Net::HTTP.start(uri.host, uri.port) {|http|
   	  http.request(req)
@@ -111,9 +108,8 @@ class RestController < ApplicationController
     groupName = dataArray[0]
     memberName = dataArray[1]
     
-    uri = URI.parse('http://localhost/rest/items/'+groupName+'/')
+    uri = URI.parse('http://localhost/rest/items/'+groupName+'/'+memberName)
     req = Net::HTTP::Put.new(uri.to_s,{'Content-Type' => 'text/plain'})
-    req.body = memberName
     res = Net::HTTP.start(uri.host, uri.port) {|http|
       http.request(req)
     }
@@ -129,10 +125,8 @@ class RestController < ApplicationController
    groupName = dataArray[0]
    item = dataArray[1]
     
-   uri = URI.parse('http://localhost/rest/items/'+groupName+'/'+item+'/')
-    
-   req = Net::HTTP::Delete.new(uri.to_s)
-    
+   uri = URI.parse('http://localhost/rest/items/'+groupName+'/'+item)    
+   req = Net::HTTP::Delete.new(uri.to_s)    
    res = Net::HTTP.start(uri.host, uri.port) {|http|
      http.request(req)
    }
@@ -148,9 +142,8 @@ class RestController < ApplicationController
    item = dataArray[0]
    tag = dataArray[1]
         
-   uri = URI.parse('http://localhost/rest/items/'+item+'/')
+   uri = URI.parse('http://localhost/rest/items/'+item+'/'+tag)
    req = Net::HTTP::Put.new(uri.to_s,{'Content-Type' => 'text/plain'})
-   req.body = tag
    res = Net::HTTP.start(uri.host, uri.port) {|http|
      http.request(req)
    }
@@ -166,10 +159,8 @@ class RestController < ApplicationController
    item = dataArray[0]
    tag = dataArray[1]
     
-   uri = URI.parse('http://localhost/rest/items/'+item+'/'+tag+'/')
-    
-   req = Net::HTTP::Delete.new(uri.to_s)
-    
+   uri = URI.parse('http://localhost/rest/items/'+item+'/'+tag)    
+   req = Net::HTTP::Delete.new(uri.to_s)    
    res = Net::HTTP.start(uri.host, uri.port) {|http|
      http.request(req)
    }

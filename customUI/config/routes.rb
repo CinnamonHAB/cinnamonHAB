@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   match '/rest/getstate' => 'rest#openhab_getstate', via: :get
   match '/rest/updatestate' => 'rest#openhab_updatestate', via: :put
   match '/rest/sendcommand' => 'rest#openhab_sendcommand', via: :post
-  match '/rest/addItem' => 'rest#openhab_addItem', via: :put
+  match '/rest/addorupdateitem' => 'rest#openhab_addItem', via: :put
   match '/rest/deleteItem' => 'rest#openhab_deleteItem', via: :delete
   match '/rest/getItem' => 'rest#openhab_getItem', via: :get
   match '/rest/addItemToGroup' => 'rest#openhab_addItemToGroup', via: :put
