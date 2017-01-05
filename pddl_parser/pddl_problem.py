@@ -27,12 +27,12 @@ class Expression:
         if self.expression_type == ExpressionType(""):
             ret += self.predicate
             for obj in self.objects:
-                ret += " ?"
+                ret += " "
                 ret += obj
         elif self.expression_type == ExpressionType("forall"):
             ret += "forall ("
             for obj in self.objects:
-                ret += " ?"
+                ret += " "
                 ret += obj
             ret += ")"
             for subexpr in self.subexpressions:
@@ -67,15 +67,16 @@ class Problem:
         ret += self.problem_name
         ret += ")\n(:domain "
         ret += self.domain_name
-        ret += ")\n(:objects\n"
+        ret += ")\n(:objects "
         for obj in self.objects:
+            ret += " "
             ret += obj
         ret += ")\n(:init\n"
         for expr in self.init_expressions:
             ret += repr(expr)
         ret += ")\n(:goal\n"
         ret += repr(self.goal_expression)
-        ret += ")"
+        ret += ")\n)"
         return ret
 
     def _get_token(self):
@@ -135,20 +136,27 @@ class Problem:
         self.domain_name = token4
         return 0
 
-    def _parse_objects(self):
+    def _parse_object_list(self):
         objects = []
-        token1 = self._get_token()
-        token2 = self._get_token()
-        token3 = self._get_token()
-        if token1 != "(" or token2 != ":" or token3 != "objects":
-            return None
         while True:
             token = self._get_token()
             if token == ")":
                 return objects
             if not token:
-                return objects
+                return None
             objects.append(token)
+
+    def _parse_objects(self):
+        token1 = self._get_token()
+        token2 = self._get_token()
+        token3 = self._get_token()
+        if token1 != "(" or token2 != ":" or token3 != "objects":
+            return -1
+        objects = self._parse_object_list()
+        if not objects:
+            return -1
+        self.objects = objects
+        return 0
 
     def _parse_expression(self):
         token1 = self._get_token()
@@ -198,7 +206,7 @@ class Problem:
         except ValueError:  # It's not any of and, or, not, forall, when.
             expression_type = ExpressionType("")
             predicate = token2
-            objects = self._parse_objects()
+            objects = self._parse_object_list()
             return Expression(expression_type, predicate, objects, subexpressions)
 
     def _parse_init(self):
@@ -217,9 +225,6 @@ class Problem:
         token1 = self._get_token()
         token2 = self._get_token()
         token3 = self._get_token()
-        print(token1)
-        print(token2)
-        print(token3)
         if token1 != "(" or token2 != ":" or token3 != "goal":
             return -1
         expression = self._parse_expression()
@@ -238,10 +243,8 @@ class Problem:
             return
         if self._parse_domain_name() != 0:
             print("Domain name given incorrectly.")
-        objects = self._parse_objects()
-        if not objects:
+        if self._parse_objects() != 0:
             print("Objects given incorrectly.")
-        self.objects = objects
         if self._parse_init() != 0:
             print("Init given incorrectly.")
         if self._parse_goal() != 0:
