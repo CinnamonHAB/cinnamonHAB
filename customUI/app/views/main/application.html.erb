@@ -83,6 +83,8 @@
 
         var numLights = 0;
         var numLightsOn = 0;
+
+        var numDimmers = 0;
         
         function getItems()
         {
@@ -142,7 +144,7 @@
         //state, type, name, label, tags, groupNames
         function addDeviceToArray(device) {
             if(device.state == "NULL") {
-                deviceArray[numDevicess] = new itemClass("OFF", device.type, device.name, device.label, device.tags, device.groupNames);
+                deviceArray[numDevices] = new itemClass("OFF", device.type, device.name, device.label, device.tags, device.groupNames);
                 updateState(deviceArray[numDevices].name, deviceArray[numDevices].state);
             }
             else
@@ -155,18 +157,28 @@
                 }
             }
         }
+
         function isLight(device) {
             if(device.label.includes("Light"))
                 return true;
             else
                 return false;
         }
+
+        function isTV(device) {
+            if(device.label.includes("TV"))
+                return true;
+            else
+                return false;
+        }
+
         function isDeviceOn(device) {
             if(device.state == "ON")
                 return true;
             else
                 return false;
         }
+
         function generateModeHTML(mode, index) {
             var row = document.createElement("div");
             row.setAttribute('class','row');
@@ -232,6 +244,13 @@
             var b = generateFunctionButton("device", device, index);            
             col3.appendChild(b);
             row.appendChild(col3);
+            /*
+            var col4 = document.createElement("div");
+            col4.setAttribute('class','col-lg-3');
+            var del = generateRemoveDeviceButton(device, index);
+            col4.appendChild(del);
+            row.appendChild(col4);
+            */
             
             var lastItem = document.getElementById("devices");
             devices.appendChild(row);
@@ -253,7 +272,7 @@
                             icon.setAttribute('src','<%= asset_path('tv_OFF.png') %>');
                         else
                             icon.setAttribute('src','<%= asset_path('tv_ON.png') %>');
-                    }else { //Temporary
+                    }else { //Default
                         if(item.state == "OFF")
                             icon.setAttribute('src','<%= asset_path('light_OFF_light.png') %>');
                         else
@@ -264,7 +283,7 @@
                     icon.setAttribute('id', item.name+'icon')
                     return icon;
                 }else {
-                    //TEMPORARY
+                    //Default
                     var icon = document.createElement("img");
                     icon.setAttribute('class','icon');
                     icon.setAttribute('src','<%= asset_path('light_OFF_light.png') %>');
@@ -285,7 +304,7 @@
                     icon.setAttribute('height','50');
                     icon.setAttribute('id', item.name+'icon')
                     return icon;
-                }else { //TEMPORARY
+                }else { //Default
                     var icon = document.createElement("img");
                     icon.setAttribute('class', 'icon');
                     icon.setAttribute('src', '<%= asset_path('heart_ON.png') %>');
@@ -339,7 +358,7 @@
 
                 return div;
             }else {
-                //TEMPORARY
+                //Default
                 var b = document.createElement('button');
                 b.setAttribute('class', 'btn btn-primary');
                 b.setAttribute('id', item.name+'button')
@@ -350,25 +369,19 @@
         }
 
         function allLamps(index) {
+            turnOffRomanticMode();
             for(var i=0; i< numDevices;i++) {
                 if(isLight(deviceArray[i])) {
-                    var icon = document.getElementById(deviceArray[i].name+"icon");
                     if(controlArray[index].state == "ON") {
                         if(isDeviceOn(deviceArray[i])) {
-                            icon.src = "<%= asset_path('light_OFF_light.png') %>";
-                            deviceArray[i].state = "OFF";
-                            numLightsOn--;
+                            turnLightOff(i);
                         }
                     }
                     else {
                         if(!isDeviceOn(deviceArray[i])) {
-                            icon.src = "<%= asset_path('light_ON.png') %>";
-                            deviceArray[i].state = "ON";
-                            numLightsOn++;
+                            turnLightOn(i);
                         }
                     }
-                    updateState(deviceArray[i].name, deviceArray[i].state);
-                    sendCommand(deviceArray[i].name, deviceArray[i].state);
                 }
             }
             var icon = document.getElementById(controlArray[index].name+"icon");
@@ -408,29 +421,114 @@
             }
         }
 
+        function turnLightOn(index) {
+            var icon = document.getElementById(deviceArray[index].name+"icon");
+            icon.src = "<%= asset_path('light_ON.png') %>";
+            deviceArray[index].state = "ON";
+            numLightsOn++;
+            updateState(deviceArray[index].name, deviceArray[index].state);
+            sendCommand(deviceArray[index].name, deviceArray[index].state);
+        }
+
+        function turnLightOff(index) {
+            var icon = document.getElementById(deviceArray[index].name+"icon");
+            icon.src = "<%= asset_path('light_OFF_light.png') %>";
+            deviceArray[index].state = "OFF";
+            numLightsOn--;
+            updateState(deviceArray[index].name, deviceArray[index].state);
+            sendCommand(deviceArray[index].name, deviceArray[index].state);
+        }
+
+        function turnTVOn(index) {
+            var icon = document.getElementById(deviceArray[index].name+"icon");
+            icon.src = "<%= asset_path('tv_ON.png') %>";
+            deviceArray[index].state = "ON";
+            updateState(deviceArray[index].name, deviceArray[index].state);
+            sendCommand(deviceArray[index].name, deviceArray[index].state);
+        }
+
+        function turnTVOff(index) {
+            var icon = document.getElementById(deviceArray[index].name+"icon");
+            icon.src = "<%= asset_path('tv_OFF.png') %>";
+            deviceArray[index].state = "OFF";
+            updateState(deviceArray[index].name, deviceArray[index].state);
+            sendCommand(deviceArray[index].name, deviceArray[index].state);
+        }
+
         function romanticMode(index) {
+            var lightsOn = 0;
+            turnOffAllLightsControl();
             for(var i=0; i< numDevices;i++) {
-                if(deviceArray[i].label.includes("Light")) {
-                    var icon = document.getElementById(deviceArray[i].name+"icon");
-                    if(modeArray[index].state == "ON")
-                        icon.src = "<%= asset_path('light_OFF_light.png') %>";
-                    else
-                        icon.src = "<%= asset_path('light_ON.png') %>";
-                }else if(deviceArray[i].label.includes("TV")) {
-                    var icon = document.getElementById(deviceArray[i].name+"icon");
-                    if(modeArray[index].state == "ON")
-                        icon.src = "<%= asset_path('tv_OFF.png') %>";
-                    else
-                        icon.src = "<%= asset_path('tv_ON.png') %>";
+                if(isLight(deviceArray[i])) {
+                    if(modeArray[index].state == "ON") {
+                        turnLightOff(i);
+                    }
+                    else {
+                        if(lightsOn == 0) {
+                            turnLightOn(i);
+                            lightsOn = 1;
+                        }else {
+                            turnLightOff(i);
+                        }
+                    }
+                }else if(isTV(deviceArray[i])) {
+                    if(modeArray[index].state == "ON") {
+                        turnTVOff(i);
+                    }
+                    else {
+                        turnTVOn(i);
+                    }
                 }
             }
-            if(modeArray[index].state == "ON")
-                modeArray[index].state = "OFF";
-            else
-                modeArray[index].state = "ON";
+            if(modeArray[index].state == "ON") {
+                turnOffRomanticMode(index);
+            }
+            else {
+                turnOnRomanticMode(index);
+            }                            
+        }
+
+        function turnOffRomanticMode(index) {
+            if(modeArray[index].label == "Romantic mode") {
+                if(modeArray[index].state == "ON") {
+                    modeArray[index].state = "OFF";
+                    var icon = document.getElementById(modeArray[index].name+"icon");
+                    icon.src = "<%= asset_path('heart_OFF.png') %>";
+                    updateState(modeArray[index].name, modeArray[index].state);
+                    sendCommand(modeArray[index].name, modeArray[index].state);
+                }
+            }
+        }
+
+        function turnOnRomanticMode(index) {
+            if(modeArray[index].label == "Romantic mode") {
+                if(modeArray[index].state == "OFF") {
+                    modeArray[index].state = "ON";
+                    var icon = document.getElementById(modeArray[index].name+"icon");
+                    icon.src = "<%= asset_path('heart_ON.png') %>";
+                    updateState(modeArray[index].name, modeArray[index].state);
+                    sendCommand(modeArray[index].name, modeArray[index].state);
+                }
+            }
+        }
+
+        function turnOffRomanticMode() {
+            for(var i=0; i< numModes;i++) {
+                if(modeArray[i].label == "Romantic mode") {
+                    if(modeArray[i].state == "ON") {
+                        modeArray[i].state = "OFF";
+                        var icon = document.getElementById(modeArray[i].name+"icon");
+                        icon.src = "<%= asset_path('heart_OFF.png') %>";
+                        updateState(modeArray[i].name, modeArray[i].state);
+                        sendCommand(modeArray[i].name, modeArray[i].state);
+                        break;
+                    }
+                }
+            }
         }
         
         function switchIt(index) {
+            turnOffRomanticMode();
             var icon = document.getElementById(deviceArray[index].name+"icon");
             if (deviceArray[index].state == "ON") {
                 deviceArray[index].state = "OFF";
@@ -458,6 +556,24 @@
             updateState(deviceArray[index].name, deviceArray[index].state);
             sendCommand(deviceArray[index].name, deviceArray[index].state);
         }
+
+        function generateRemoveDeviceButton(device, index) {
+            var b = document.createElement('button');
+            b.setAttribute('class', 'btn btn-primary');
+            b.setAttribute('id', device.name+'removebutton')
+            b.setAttribute('onclick','removeIt('+index+')'); //\'device\',
+            b.innerHTML = 'Remove Device';
+            return b;
+        }
+
+        function removeIt(index) {
+            deleteItem(deviceArray[index].name);
+            for(var i=index; i < numDevices; i++) {
+                deviceArray[index] = deviceArray[index+1];
+            }
+            numDevices--;
+        }
+
         function updateState( item, txtNewState ) {
             var request = $.ajax ( {
                 type       : "PUT",
@@ -497,6 +613,24 @@
                 url        : "localhost:3000/rest/getstate",
                 data       : item,
                 headers    : { "Accept": "text/plain"},
+            });
+
+            request.done( function(data) { 
+                console.log( "Success: Status=" + data );
+            });
+
+            request.fail( function(jqXHR, textStatus ) { 
+                console.log( "Failure: " + textStatus );
+            });
+        }
+
+        function deleteItem(item)
+        {
+            var request = $.ajax ( {
+                type       : "DELETE",
+                url        : "localhost:3000/rest/deleteitem",
+                data       : item,
+                headers    : { 'Content-Type': 'text/plain', "Accept": "text/plain"},
             });
 
             request.done( function(data) { 

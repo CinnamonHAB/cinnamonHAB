@@ -70,7 +70,7 @@ class RestController < ApplicationController
     render plain: res.code
   end
 
-  def openhab_deleteItem
+  def openhab_deleteitem
     require 'net/http'
     require 'uri'
     
@@ -83,6 +83,7 @@ class RestController < ApplicationController
     res = Net::HTTP.start(uri.host, uri.port) {|http|
       http.request(req)
     }
+    puts res.code
     render plain: res.code
   end
 
