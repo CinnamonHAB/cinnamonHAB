@@ -8,7 +8,7 @@ class SessionsController < ApplicationController
     
     if user == params[:session][:username].downcase && password == params[:session][:password]
         log_in
-        redirect_to 'main#application'
+        render :template => 'main/application'
     else
         flash.now[:danger] = 'Invalid username or password combination'
         render 'new'
@@ -17,6 +17,6 @@ class SessionsController < ApplicationController
   
   def destroy
         log_out
-        redirect_to root_url
+        redirect_to 'new'
   end
 end
