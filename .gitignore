@@ -1,2 +1,4 @@
 openhabconfig/
 nginxconfig/
+.idea/
+cmake-build-debug/
