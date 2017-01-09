@@ -263,10 +263,10 @@ class Stream(http.server.BaseHTTPRequestHandler):
         self.send_header('Content-type', 'text/html')
         self.end_headers()
 
+        request = self.rfile.read().decode("utf8")
         # Send message back to client
-        message = "Hello world!"
         # Write content as utf-8 data
-        self.wfile.write(bytes(message, "utf8"))
+        self.wfile.write(bytes(request, "utf8"))
         return
 
 
