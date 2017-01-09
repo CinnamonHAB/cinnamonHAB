@@ -177,6 +177,24 @@
                     }
                 }
             }
+
+            if(numDevices == 0) {
+                var empty = document.createElement('p');
+                empty.innerHTML = "No Devices Found";
+                devices.appendChild(empty);
+            }
+
+            if(numControls == 0) {
+                var empty = document.createElement('p');
+                empty.innerHTML = "No Controls Found";
+                controls.appendChild(empty);
+            }
+
+            if(numModes == 0) {
+                var empty = document.createElement('p');
+                empty.innerHTML = "No Modes Found";
+                modes.appendChild(empty);
+            }
         }
         //state, type, name, label, tags, groupNames
         function addModeToArray(mode) {
@@ -388,7 +406,7 @@
                 b.setAttribute('class', 'btn btn-primary');
                 b.setAttribute('id', item.name+'button')
                 if(type == "control") {
-                    b.setAttribute('onclick', 'allLamps('+index+')');
+                    b.setAttribute('onclick', 'allLights('+index+')');
                 }else if (type == "mode") {
                     b.setAttribute('onclick', 'romanticMode('+index+')');
                 }else {
@@ -447,7 +465,7 @@
             document.getElementById(deviceArray[index].name+"input").value= val;
         }
 
-        function allLamps(index) {
+        function allLights(index) {
             turnOffRomanticMode();
             var icon = document.getElementById(controlArray[index].name+"icon");
             if(controlArray[index].state == "ON") {

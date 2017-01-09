@@ -4,7 +4,7 @@ Install:
 
 Ruby version: 2.3.1
 
-Intsall gems:
+Install gems:
 
 Rails version: 5.0.0.1
 bootstrap-sass: 3.3.7
@@ -14,6 +14,7 @@ jquery-rails
 
 Starting Server:
 
+export OPENHAB_SERVER='http://localhost/'
 bin/rails server
 
 Accessing Server:
