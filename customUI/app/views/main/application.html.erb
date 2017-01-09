@@ -13,7 +13,7 @@
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
 
-    <title>Beta Presentation</title>
+    <title>Cinnamon HAB</title>
 
     <!-- Custom Fonts -->
     <!--<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
@@ -26,8 +26,18 @@
     <!-- Navigation -->
     <nav id="mainNav" class="aux navbar-custom">
         <div class="container-fluid">
-            <div class="navbar-header page-scroll">
-                <a class="navbar-brand">CinnamonHAB</a>
+            <div class="row">
+                <div class="col-lg-6 intro-text">
+                    <div class="navbar-header page-scroll">                    
+                        <a class="navbar-brand">CinnamonHAB</a>
+                    </div>
+                </div>
+                    <div class="col-lg-6 intro-text">
+                        <div class="logout-button">
+                            <%= button_to "Logout", {:controller => :sessions, :action => 'destroy'}, :method => :delete, class: "btn btn-primary" %>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
@@ -172,6 +182,13 @@
                 return false;
         }
 
+        function isDimm(device) {
+            if(device.label.includes("Dimmer"))
+                return true;
+            else
+                return false;
+        }
+
         function isDeviceOn(device) {
             if(device.state == "ON")
                 return true;
@@ -244,13 +261,6 @@
             var b = generateFunctionButton("device", device, index);            
             col3.appendChild(b);
             row.appendChild(col3);
-            /*
-            var col4 = document.createElement("div");
-            col4.setAttribute('class','col-lg-3');
-            var del = generateRemoveDeviceButton(device, index);
-            col4.appendChild(del);
-            row.appendChild(col4);
-            */
             
             var lastItem = document.getElementById("devices");
             devices.appendChild(row);
@@ -262,7 +272,7 @@
                     icon.setAttribute('class','icon');
                     if(item.label.includes("Light")) {
                         if(item.state == "OFF")
-                            icon.setAttribute('src','<%= asset_path('light_OFF_light.png') %>');
+                            icon.setAttribute('src','<%= asset_path('light_OFF_dark.png') %>');
                         else
                             icon.setAttribute('src','<%= asset_path('light_ON.png') %>');
 
@@ -274,7 +284,7 @@
                             icon.setAttribute('src','<%= asset_path('tv_ON.png') %>');
                     }else { //Default
                         if(item.state == "OFF")
-                            icon.setAttribute('src','<%= asset_path('light_OFF_light.png') %>');
+                            icon.setAttribute('src','<%= asset_path('light_OFF_dark.png') %>');
                         else
                             icon.setAttribute('src','<%= asset_path('light_ON.png') %>');
                     }                
@@ -286,7 +296,7 @@
                     //Default
                     var icon = document.createElement("img");
                     icon.setAttribute('class','icon');
-                    icon.setAttribute('src','<%= asset_path('light_OFF_light.png') %>');
+                    icon.setAttribute('src','<%= asset_path('light_OFF_dark.png') %>');
                     icon.setAttribute('width','50');
                     icon.setAttribute('height','50');
                     icon.setAttribute('id', item.name+'icon')
@@ -337,26 +347,20 @@
                 b.innerHTML = 'Turn ON/OFF';
                 return b;
             }else if(item.type == "Dimmer") {
-                var div = document.createElement('div');
-                div.setAttribute('class', 'clickable');
-                var div2 = document.createElement('div');
-                div2.setAttribute('class', 'display');
-                var div3 = document.createElement('div');
-                div3.setAttribute('class', 'progress');
-                div2.appendChild(div3);
-                div.appendChild(div2);
-
-                $('.clickable').bind('click', function (ev) {
-                    var $div = $(ev.target);
-                    var $display = $div.find('.display');
-
-                    var offset = $div.offset();
-                    var x = ev.clientX - offset.left;
-
-                    $('.progress').width(x);
-                });
+                numDimmers++;
+                var div = document.createElement('input');
+                div.type = "range";
+                div.setAttribute('id', item.name+'input');
+                div.setAttribute('min', '0');
+                div.setAttribute('max', '100');
+                if(item.state == "ON")
+                    div.setAttribute('value', '100');
+                else
+                    div.setAttribute('value', '0');
+                div.setAttribute('oninput', 'dimmIt(this.value, '+index+', '+numDimmers+')');
 
                 return div;
+                
             }else {
                 //Default
                 var b = document.createElement('button');
@@ -368,11 +372,45 @@
             }
         }
 
+        function dimmIt(val, index, numDim){
+            var light = "Light "+numDim;
+            if(val > 0) {
+                turnDimmerOn(index);
+                for(var i=0; i < numDevices;i++) {
+                    if(deviceArray[i].label == light) {
+                        turnLightOn(i);
+                        break;
+                    }
+                }                        
+            }else {
+                turnDimmerOff(index);
+                for(var i=0; i < numDevices;i++) {
+                    if(deviceArray[i].label == light) {
+                        turnLightOff(i);
+                        break;
+                    }
+                }                        
+            }
+        }
+
+        function setDimm(val, index) {
+            document.getElementById(deviceArray[index].name+"input").value= val;
+        }
+
         function allLamps(index) {
             turnOffRomanticMode();
+            var icon = document.getElementById(controlArray[index].name+"icon");
+            if(controlArray[index].state == "ON") {
+                controlArray[index].state = "OFF";
+                icon.src = "<%= asset_path('light_OFF_dark.png') %>";
+            }
+            else {
+                controlArray[index].state = "ON";
+                icon.src = "<%= asset_path('light_ON.png') %>";
+            }
             for(var i=0; i< numDevices;i++) {
                 if(isLight(deviceArray[i])) {
-                    if(controlArray[index].state == "ON") {
+                    if(controlArray[index].state == "OFF") {
                         if(isDeviceOn(deviceArray[i])) {
                             turnLightOff(i);
                         }
@@ -384,15 +422,7 @@
                     }
                 }
             }
-            var icon = document.getElementById(controlArray[index].name+"icon");
-            if(controlArray[index].state == "ON") {
-                controlArray[index].state = "OFF";
-                icon.src = "<%= asset_path('light_OFF_light.png') %>";
-            }
-            else {
-                controlArray[index].state = "ON";
-                icon.src = "<%= asset_path('light_ON.png') %>";
-            }
+            
         }
         function turnOffAllLightsControl() {
             for(var i=0; i< numControls;i++) {
@@ -400,10 +430,11 @@
                     if(controlArray[i].state == "ON") {
                         controlArray[i].state = "OFF";
                         var icon = document.getElementById(controlArray[i].name+"icon");
-                        icon.src = "<%= asset_path('light_OFF_light.png') %>";
+                        icon.src = "<%= asset_path('light_OFF_dark.png') %>";
                         updateState(controlArray[i].name, controlArray[i].state);
-                        break;
+                        sendCommand(controlArray[i].name, controlArray[i].state);
                     }
+                    break;
                 }
             }
         }
@@ -415,26 +446,50 @@
                         var icon = document.getElementById(controlArray[i].name+"icon");
                         icon.src = "<%= asset_path('light_ON.png') %>";
                         updateState(controlArray[i].name, controlArray[i].state);
-                        break;
+                        sendCommand(controlArray[i].name, controlArray[i].state);
                     }
+                    break;
                 }
             }
         }
 
         function turnLightOn(index) {
+            if(deviceArray[index].state = "OFF") {
+                var icon = document.getElementById(deviceArray[index].name+"icon");
+                icon.src = "<%= asset_path('light_ON.png') %>";
+                deviceArray[index].state = "ON";
+                numLightsOn++;
+                if(numLightsOn == numLights)
+                    turnOnAllLightsControl();
+                updateState(deviceArray[index].name, deviceArray[index].state);
+                sendCommand(deviceArray[index].name, deviceArray[index].state);
+            }
+        }
+
+        function turnLightOff(index) {
+            if(deviceArray[index].state = "ON") {
+                var icon = document.getElementById(deviceArray[index].name+"icon");
+                icon.src = "<%= asset_path('light_OFF_dark.png') %>";
+                deviceArray[index].state = "OFF";
+                numLightsOn--;
+                turnOffAllLightsControl();
+                updateState(deviceArray[index].name, deviceArray[index].state);
+                sendCommand(deviceArray[index].name, deviceArray[index].state);
+            }
+        }
+
+        function turnDimmerOn(index) {
             var icon = document.getElementById(deviceArray[index].name+"icon");
             icon.src = "<%= asset_path('light_ON.png') %>";
             deviceArray[index].state = "ON";
-            numLightsOn++;
             updateState(deviceArray[index].name, deviceArray[index].state);
             sendCommand(deviceArray[index].name, deviceArray[index].state);
         }
 
-        function turnLightOff(index) {
+        function turnDimmerOff(index) {
             var icon = document.getElementById(deviceArray[index].name+"icon");
-            icon.src = "<%= asset_path('light_OFF_light.png') %>";
+            icon.src = "<%= asset_path('light_OFF_dark.png') %>";
             deviceArray[index].state = "OFF";
-            numLightsOn--;
             updateState(deviceArray[index].name, deviceArray[index].state);
             sendCommand(deviceArray[index].name, deviceArray[index].state);
         }
@@ -457,6 +512,7 @@
 
         function romanticMode(index) {
             var lightsOn = 0;
+            var dimmsOn = 0;
             turnOffAllLightsControl();
             for(var i=0; i< numDevices;i++) {
                 if(isLight(deviceArray[i])) {
@@ -477,6 +533,22 @@
                     }
                     else {
                         turnTVOn(i);
+                    }
+                }else if(isDimm(deviceArray[i])) {
+                    if(modeArray[index].state == "ON") {
+                        turnDimmerOff(i);
+                        setDimm(0, i);
+                    }
+                    else {
+                        if(dimmsOn == 0) {
+                            console.log("!");
+                            turnDimmerOn(i);
+                            setDimm(50, i);
+                            dimmsOn = 1;
+                        }else {
+                            turnDimmerOff(i);
+                            setDimm(0, i);
+                        }
                     }
                 }
             }
@@ -521,40 +593,41 @@
                         icon.src = "<%= asset_path('heart_OFF.png') %>";
                         updateState(modeArray[i].name, modeArray[i].state);
                         sendCommand(modeArray[i].name, modeArray[i].state);
-                        break;
+                        
                     }
+                    break;
                 }
             }
         }
         
         function switchIt(index) {
-            turnOffRomanticMode();
-            var icon = document.getElementById(deviceArray[index].name+"icon");
+            turnOffRomanticMode();            
             if (deviceArray[index].state == "ON") {
-                deviceArray[index].state = "OFF";
-                if(deviceArray[index].label.includes("Light")) {
-                    icon.src = "<%= asset_path('light_OFF_light.png') %>";
-                    numLightsOn--;
-                    turnOffAllLightsControl();
-                }else if (deviceArray[index].label.includes("TV")) {
-                    icon.src = "<%= asset_path('tv_OFF.png') %>";
-                }else //TEMPORARY
-                    icon.src = "<%= asset_path('light_OFF_light.png') %>";
+                if(isLight(deviceArray[index])) {
+                    turnLightOff(index);
+                }else if (isTV(deviceArray[index])) {
+                    turnTVOff(index);
+                }else { //default
+                    var icon = document.getElementById(deviceArray[index].name+"icon");
+                    icon.src = "<%= asset_path('light_OFF_dark.png') %>";
+                    updateState(deviceArray[index].name, deviceArray[index].state);
+                    sendCommand(deviceArray[index].name, deviceArray[index].state);
+                }
             }
             else {
-                deviceArray[index].state = "ON";
-                if(deviceArray[index].label.includes("Light")) {
+                if(isLight(deviceArray[index])) {
+                    turnLightOn(index);
+                    
+                }else if (isTV(deviceArray[index])) {
+                    turnTVOn(index);
+                }else { //default
+                    var icon = document.getElementById(deviceArray[index].name+"icon");
                     icon.src = "<%= asset_path('light_ON.png') %>";
-                    numLightsOn++;
-                    if(numLightsOn == numLights)
-                        turnOnAllLightsControl();
-                }else if (deviceArray[index].label.includes("TV")) {
-                    icon.src = "<%= asset_path('tv_ON.png') %>";
-                }else //TEMPORARY
-                    icon.src = "<%= asset_path('light_ON.png') %>";
+                    updateState(deviceArray[index].name, deviceArray[index].state);
+                    sendCommand(deviceArray[index].name, deviceArray[index].state);
+                }
             }
-            updateState(deviceArray[index].name, deviceArray[index].state);
-            sendCommand(deviceArray[index].name, deviceArray[index].state);
+            
         }
 
         function generateRemoveDeviceButton(device, index) {

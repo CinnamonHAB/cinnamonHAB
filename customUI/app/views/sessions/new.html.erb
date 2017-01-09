@@ -1,18 +1,70 @@
-<% provide(:title, "Log in") %>
-<h1>Log in</h1>
 
-<div class="row">
-  <div class="col-md-6 col-md-offset-3">
-    <%= form_for(:session, url: login_path) do |f| %>
 
-      <%= f.label :username %>
-      <%= f.text_field :username, class: 'form-control' %>
+<!DOCTYPE html>
+<html lang="en">
 
-      <%= f.label :password %>
-      <%= f.password_field :password, class: 'form-control' %>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-      <%= f.submit "Log in", class: "btn btn-primary" %>
-    <% end %>
+    <%= csrf_meta_tags %>
+    <link rel="stylesheet" type="text/css" href="devices.css">
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
 
-  </div>
-</div>
+    <% provide(:title, "Login") %>
+
+    <!-- Custom Fonts -->
+    <!--<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">-->
+    
+
+</head>
+
+<body id="page-top" class="index">
+    <!-- Navigation -->
+    <nav id="mainNav" class="aux navbar-custom">
+        <div class="container-fluid">
+            <div class="navbar-header page-scroll">
+                <a class="navbar-brand">CinnamonHAB</a>
+            </div>
+        </div>
+    </nav>
+    <!-- Header -->
+    <header>
+    	<h1 class="col-lg-12 intro-text" align="center">Login</h1>    
+        <div class="container">            
+			<div class="row">
+			  <div class="col-md-6 col-md-offset-3">
+			    <%= form_for(:session, url: login_path) do |f| %>
+
+			      <%= f.label :username %>
+			      <%= f.text_field :username, class: 'form-control' %>
+
+			      <%= f.label :password %>
+			      <%= f.password_field :password, class: 'form-control' %>
+			      <div class="form-button">
+			      	<%= f.submit "Login", class: "btn btn-primary"  %>
+			      </div>
+			    <% end %>
+			  </div>
+			</div>                                   
+        </div>
+    </header>
+
+</body>
+<!-- Footer -->
+    <footer class="text-center">
+        <div class="footer-below">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        Copyright &copy; CinnamonHAB 2016-2017
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
