@@ -1,6 +1,7 @@
 import urllib.request
 import json
 import ff_com
+import http.server
 
 addr = "http://127.0.0.1:8080" # updated with SedAddr()
 rest_path = "/rest"
@@ -129,20 +130,22 @@ def WriteProblem(problem):
   with open("problem.txt", "w") as problem_file:
     print(problem, file=problem_file)
 
+
 # Subscribes to events from OpenHab. To actually get the stream, GetStream() needs to be called.
 # Updates stream_url. If all goes well returns {}.
 # If something goes wrong, returns {"error":400} (but using the real code that it got).
 def Subscribe():
-  global addr
-  global subscription_path
-  global stream_url
-  req = urllib.request.Request(addr+subscription_path, None, {"Content-Type": "application/json", "Accept": "application/json"}, method="POST")
-  try:
-    res = json.loads(urllib.request.urlopen(req).read().decode("utf-8"))
-    stream_url = res["context"]["headers"]["Location"][0]
-  except urllib.error.HTTPError as err:
-    return {"error":err.code}
-  return {}
+  pass
+  # global addr
+  # global subscription_path
+  # global stream_url
+  # req = urllib.request.Request(addr+subscription_path, None, {"Content-Type": "application/json", "Accept": "application/json"}, method="POST")
+  # try:
+  #   res = json.loads(urllib.request.urlopen(req).read().decode("utf-8"))
+  #   stream_url = res["context"]["headers"]["Location"][0]
+  # except urllib.error.HTTPError as err:
+  #   return {"error":err.code}
+  # return {}
 
 # Loads target states from target_states.json.
 # Returns a trget state string, depending on the given item and its new state.
@@ -215,9 +218,11 @@ def _TurnOffActions(action_item):
 # Must be called after Subscribe(). Once called, the connection will not close and will be kept open.
 # If something goes wrong, returns {"error":400} (but using the real code that it got).
 def StartStream(sitemap, pageid):
-  global stream_url
-  global ignore_list
-  req = urllib.request.Request(stream_url + "?sitemap=" + sitemap + "&pageid=" + pageid, None, {"Accept": "text/event-stream"})
+  # global stream_url
+  # global ignore_list
+  # req = urllib.request.Request(stream_url + "?sitemap=" + sitemap + "&pageid=" + pageid, None, {"Accept": "text/event-stream"})
+  httpd = http.server.HTTPServer(('', 31337), BaseHTTPRequestHandler)
+  httpd.serve_forever()
   try:
     with urllib.request.urlopen(req) as res:
       while True:
@@ -247,3 +252,27 @@ def StartStream(sitemap, pageid):
     return {"error":err.code}
   return {}
 
+
+class Stream(http.server.BaseHTTPRequestHandler):
+    # GET
+    def do_GET(self):
+        # Send response status code
+        self.send_response(200)
+
+        # Send headers
+        self.send_header('Content-type', 'text/html')
+        self.end_headers()
+
+        # Send message back to client
+        message = "Hello world!"
+        # Write content as utf-8 data
+        self.wfile.write(bytes(message, "utf8"))
+        return
+
+
+def run():
+    print("Starting server...")
+    server_address = ('', 31337)
+    httpd = http.server.HTTPServer(server_address, Stream)
+    print("Running server...")
+    httpd.serve_forever()
