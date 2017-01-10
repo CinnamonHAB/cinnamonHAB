@@ -46,7 +46,7 @@
     <header>
         <div class="container">
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-lg-6">
                     <div class="refresh-button">
                         <button class="btn btn-primary" id="refresh" onclick="refresh()">Refresh</button>
                     </div>
@@ -215,7 +215,7 @@
         }
 
         function isLight(device) {
-            if(device.label.includes("Light"))
+            if(device.label.includes("Light") || device.label.includes("Lamp"))
                 return true;
             else
                 return false;
@@ -316,7 +316,7 @@
                 if(item.type == "Switch") {
                     var icon = document.createElement("img");
                     icon.setAttribute('class','icon');
-                    if(item.label.includes("Light")) {
+                    if(isLight(item)) {
                         if(item.state == "OFF")
                             icon.setAttribute('src','<%= asset_path('light_OFF_dark.png') %>');
                         else
