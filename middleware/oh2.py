@@ -218,11 +218,9 @@ def _TurnOffActions(action_item):
 # Must be called after Subscribe(). Once called, the connection will not close and will be kept open.
 # If something goes wrong, returns {"error":400} (but using the real code that it got).
 def StartStream(sitemap, pageid):
-  # global stream_url
-  # global ignore_list
-  # req = urllib.request.Request(stream_url + "?sitemap=" + sitemap + "&pageid=" + pageid, None, {"Accept": "text/event-stream"})
-  httpd = http.server.HTTPServer(('', 31337), BaseHTTPRequestHandler)
-  httpd.serve_forever()
+  global stream_url
+  global ignore_list
+  req = urllib.request.Request(stream_url + "?sitemap=" + sitemap + "&pageid=" + pageid, None, {"Accept": "text/event-stream"})
   try:
     with urllib.request.urlopen(req) as res:
       while True:
