@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   get 'rest/openhab_getItem'
   get '/main/application'
   root 'sessions#new'
+  match '/rest/dumm' => 'rest#middle_dumm', via: :get
   match '/rest/getitems' => 'rest#openhab_getitems', via: :get
   match '/rest/getstate' => 'rest#openhab_getstate', via: :get
   match '/rest/updatestate' => 'rest#openhab_updatestate', via: :put

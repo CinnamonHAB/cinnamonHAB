@@ -1,8 +1,22 @@
 class RestController < ApplicationController
+  @@a = ENV["OPENHAB_SERVER"]
+  def middle_dumm
+    require 'net/http'
+    require 'uri'
+
+    uri = URI.parse('http://localhost:31337/')
+    req = Net::HTTP::Post.new(uri.to_s, {'Content-Type' => 'text/plain'})
+    req.body = "Hey\n"
+    res = Net::HTTP.start(uri.host, uri.port) {|http|
+      http.request(req)
+    }
+    puts res.body
+    render plain: res.body
+  end
   def openhab_getitems
   	require 'net/http'
 
-  	uri = URI.parse('http://localhost/rest/items')
+  	uri = URI.parse(@@a+'/rest/items')
   	req = Net::HTTP::Get.new(uri.to_s)
   	res = Net::HTTP.start(uri.host, uri.port) {|http|
   	  http.request(req)
@@ -14,7 +28,7 @@ class RestController < ApplicationController
     require 'uri'
 
     item = "#{request.body.read}" 
-    uri = URI.parse('http://localhost/rest/items/'+item+'/state')
+    uri = URI.parse(@@a+'/rest/items/'+item+'/state')
     req = Net::HTTP::Put.new(uri.to_s)
     res = Net::HTTP.start(uri.host, uri.port) {|http|
       http.request(req)
@@ -29,7 +43,7 @@ class RestController < ApplicationController
     dataArray = data.split(' ')
     item = dataArray[0]
     newState = dataArray[1]
-    uri = URI.parse('http://localhost/rest/items/'+item+'/state')
+    uri = URI.parse(@@a+'/rest/items/'+item+'/state')
     req = Net::HTTP::Put.new(uri.to_s,{'Content-Type' => 'text/plain'})
     req.body = newState
     res = Net::HTTP.start(uri.host, uri.port) {|http|
@@ -45,7 +59,7 @@ class RestController < ApplicationController
   	dataArray = data.split(' ')
   	item = dataArray[0]
   	command = dataArray[1]
-  	uri = URI.parse('http://localhost/rest/items/'+item)
+  	uri = URI.parse(@@a+'/rest/items/'+item)
   	req = Net::HTTP::Post.new(uri.to_s, {'Content-Type' => 'text/plain'})
   	req.body = command
     res = Net::HTTP.start(uri.host, uri.port) {|http|
