@@ -128,36 +128,7 @@
             }
             getItems();
         }
-        function temp()
-        {
-            var request = $.ajax ( {
-                type       : "GET",
-                url        : url_path+"/rest/dumm",
-                headers    : { "Accept": "text/plain"},
-            });
-            request.done( function(data) { 
-                console.log( "Success: Status=" + data );
-            });
-            request.fail( function(jqXHR, textStatus ) { 
-                console.log( "Failure: " + textStatus );
-            });
-        }
         
-        function getItems()
-        {
-            var request = $.ajax ( {
-                type       : "GET",
-                url        : url_path+"/rest/getitems",
-                headers    : { "Accept": "text/plain"},
-            });
-            request.done( function(data) { 
-                console.log( "Success: Status=" + data );
-                create(data);
-            });
-            request.fail( function(jqXHR, textStatus ) { 
-                console.log( "Failure: " + textStatus );
-            });
-        }
         function create(data) {
             for(var i = 0; i <Object.keys(data).length; i++) {
                 if(data[i].type == "Group") {
@@ -466,7 +437,12 @@
         }
 
         function allLights(index) {
-            turnOffRomanticMode();
+            var state = getState(controlArray[index].name);
+            var obj = {"name":controlArray[index].name, "state":state};
+            var action = JSON.stringify(obj);
+            console.log(action);
+            sendAction(action);
+            /*turnOffRomanticMode();
             var icon = document.getElementById(controlArray[index].name+"icon");
             if(controlArray[index].state == "ON") {
                 controlArray[index].state = "OFF";
@@ -489,7 +465,7 @@
                         }
                     }
                 }
-            }
+            }*/
             
         }
         function turnOffAllLightsControl() {
@@ -673,7 +649,6 @@
             if (deviceArray[index].state == "ON") {
                 if(isLight(deviceArray[index])) {
                     turnLightOff(index);
-                    temp();
                 }else if (isTV(deviceArray[index])) {
                     turnTVOff(index);
                 }else { //default
@@ -687,7 +662,6 @@
             else {
                 if(isLight(deviceArray[index])) {
                     turnLightOn(index);
-                    temp();
                 }else if (isTV(deviceArray[index])) {
                     turnTVOn(index);
                 }else { //default
@@ -715,6 +689,38 @@
                 deviceArray[index] = deviceArray[index+1];
             }
             numDevices--;
+        }
+
+        function sendAction(action)
+        {
+            var request = $.ajax ( {
+                type       : "POST",
+                url        : url_path+"/rest/sendaction",
+                data       : action,
+                headers    : { 'Content-Type': 'application/json', 'Accept': 'text/plain' },
+            });
+            request.done( function(data) { 
+                console.log( "Success: Status=" + data );
+            });
+            request.fail( function(jqXHR, textStatus ) { 
+                console.log( "Failure: " + textStatus );
+            });
+        }
+        
+        function getItems()
+        {
+            var request = $.ajax ( {
+                type       : "GET",
+                url        : url_path+"/rest/getitems",
+                headers    : { "Accept": "text/plain"},
+            });
+            request.done( function(data) { 
+                console.log( "Success: Status=" + data );
+                create(data);
+            });
+            request.fail( function(jqXHR, textStatus ) { 
+                console.log( "Failure: " + textStatus );
+            });
         }
 
         function updateState( item, txtNewState ) {
@@ -752,14 +758,15 @@
         function getState(item)
         {
             var request = $.ajax ( {
-                type       : "GET",
-                url        : "localhost:3000/rest/getstate",
+                type       : "POST",
+                url        : url_path+"/rest/getstate",
                 data       : item,
-                headers    : { "Accept": "text/plain"},
+                headers    : { 'Content-Type': 'text/plain', "Accept": "text/plain"},
             });
 
             request.done( function(data) { 
                 console.log( "Success: Status=" + data );
+                return data;
             });
 
             request.fail( function(jqXHR, textStatus ) { 
@@ -778,6 +785,7 @@
 
             request.done( function(data) { 
                 console.log( "Success: Status=" + data );
+
             });
 
             request.fail( function(jqXHR, textStatus ) { 

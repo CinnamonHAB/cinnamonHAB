@@ -15,6 +15,7 @@ jquery-rails
 Starting Server:
 
 export OPENHAB_SERVER='http://localhost/'
+export MIDDLEWARE_SERVER='http://localhost:31337/'
 bin/rails server
 
 Accessing Server:

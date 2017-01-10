@@ -1,12 +1,14 @@
 class RestController < ApplicationController
   @@a = ENV["OPENHAB_SERVER"]
-  def middle_dumm
+  @@b = ENV["MIDDLEWARE_SERVER"] #http://localhost:31337/
+  def middle_sendaction
     require 'net/http'
     require 'uri'
-
-    uri = URI.parse('http://localhost:31337/')
+    action = "#{request.body.read}" 
+    puts action
+    uri = URI.parse(@@b)
     req = Net::HTTP::Post.new(uri.to_s, {'Content-Type' => 'text/plain'})
-    req.body = "Hey\n"
+    req.body = action
     res = Net::HTTP.start(uri.host, uri.port) {|http|
       http.request(req)
     }
@@ -24,15 +26,18 @@ class RestController < ApplicationController
     render json: res.body
 	end
   def openhab_getstate
+    puts "ahaha"
     require 'net/http'
     require 'uri'
 
     item = "#{request.body.read}" 
+    puts item
     uri = URI.parse(@@a+'/rest/items/'+item+'/state')
     req = Net::HTTP::Put.new(uri.to_s)
     res = Net::HTTP.start(uri.host, uri.port) {|http|
       http.request(req)
     }
+    puts res.body
     render plain: res.body
   end
   def openhab_updatestate
