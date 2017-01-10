@@ -770,10 +770,15 @@
 
             request.done( function(data) { 
                 console.log( "Success: Status=" + data );
-                var obj = {"name":item, "state":data};
-                var action = JSON.stringify(obj);
-                console.log(action);
-                sendAction(action);
+                if(item.includes("action")) {
+                    if(data == "ON")
+                        var obj = {"name":item, "state":"OFF"};
+                    else
+                        var obj = {"name":item, "state":"ON"};
+                    var action = JSON.stringify(obj);
+                    console.log(action);
+                    sendAction(action);
+                }
             });
 
             request.fail( function(jqXHR, textStatus ) { 
