@@ -217,8 +217,7 @@
         }
 
         function isLight(device) {
-            if(device.label.includes("Light") || device.label.includes("Lamp"))
-            if(device.label.includes("Light") || device.label.includes("Lamp") || device.label.includes("lamp"))
+            if(device.label.includes("Light") || device.label.includes("Lamp") || device.label.includes("light") || device.label.includes("lamp") || device.label.includes("LIGHT") || device.label.includes("LAMP"))
                 return true;
             else
                 return false;
