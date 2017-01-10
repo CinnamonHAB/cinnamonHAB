@@ -118,7 +118,7 @@ def GetProblem(group_name, target_state):
     item_states.extend(["(not (DIMMED " + key + "))" if int(GetItem(key)["state"]) != 30 else "(DIMMED " + key + ")" for key in items if key[0] == "d"])
     problem = "(define\n(problem problem-name)\n(:domain cinnemain)\n"
     with open("pddl_init.txt", "r") as pddl_init:
-        problem += pddl_init.read().decode("utf-8")
+        problem += pddl_init.read()
     # problem += "(:objects " + " ".join(item_names) + " " + group_name + ")\n"
     # problem += "(:init " + "\n".join(item_types_names) + "\n"
     # problem += "(GROUP " + group_name + ")\n"
