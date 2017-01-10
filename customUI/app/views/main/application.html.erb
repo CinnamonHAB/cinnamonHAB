@@ -121,6 +121,7 @@
             while (devs.hasChildNodes() && devs.children.length > 0) {
                 devs.removeChild(devs.lastChild);
             }
+            /*
             var modes = document.getElementById("modes");
             while (modes.hasChildNodes() && modes.children.length > 0) {
                 modes.removeChild(modes.lastChild);
@@ -129,6 +130,7 @@
             while (controls.hasChildNodes() && controls.children.length > 0) {
                 controls.removeChild(controls.lastChild);
             }
+            */
             getItems();
         }
         
@@ -162,7 +164,7 @@
                 empty.innerHTML = "No Devices Found";
                 devices.appendChild(empty);
             }
-
+            /*
             if(numControls == 0) {
                 var empty = document.createElement('p');
                 empty.innerHTML = "No Controls Found";
@@ -173,7 +175,7 @@
                 var empty = document.createElement('p');
                 empty.innerHTML = "No Modes Found";
                 modes.appendChild(empty);
-            }
+            }*/
         }
         //state, type, name, label, tags, groupNames
         function addModeToArray(mode) {
@@ -215,7 +217,7 @@
         }
 
         function isLight(device) {
-            if(device.label.includes("Light") || device.label.includes("Lamp"))
+            if(device.label.includes("Light") || device.label.includes("Lamp") || device.label.includes("light") || device.label.includes("lamp") || device.label.includes("LIGHT") || device.label.includes("LAMP"))
                 return true;
             else
                 return false;
