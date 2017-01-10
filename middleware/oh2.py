@@ -218,56 +218,42 @@ def _TurnOffActions(action_item):
       SetItem(item["name"], "OFF")
   return ignore_list
 
+
 # Opens a long-pollin stream for the desired sitemap and pageid (can be found out through browser).
 # Must be called after Subscribe(). Once called, the connection will not close and will be kept open.
 # If something goes wrong, returns {"error":400} (but using the real code that it got).
-def StartStream(sitemap, pageid):
-  global stream_url
-  global ignore_list
-  req = urllib.request.Request(stream_url + "?sitemap=" + sitemap + "&pageid=" + pageid, None, {"Accept": "text/event-stream"})
-  try:
-    with urllib.request.urlopen(req) as res:
-      while True:
-        res.readline()
-        data = json.loads(res.readline()[6:-1].decode("utf-8"))
-        res.readline()
-        item = data["item"]["name"]
-        state = data["item"]["state"]
-        print(item + " changed to " + state)
-        if item in ignore_list:
-          ignore_list.remove(item)
-          continue
-        target_state = _GetTargetState(item, state)
-        print(target_state)
-        if target_state != None:
-          problem = GetProblem("g", target_state)
-          WriteProblem(problem)
-          ff_output = ff_com.get_plan("./", "domain.txt", "problem.txt", "0")
-          print("FF_OUTPUT:")
-          print(ff_output)
-          steps = _GetSteps(ff_output)
-          if state == "ON":
+def process_update(update):
+    global ignore_list
+    item = update["item"]["name"]
+    state = update["item"]["state"]
+    print(item + " changed to " + state)
+    if item in ignore_list:
+        ignore_list.remove(item)
+        return
+    target_state = _GetTargetState(item, state)
+    print(target_state)
+    if target_state is not None:
+        problem = GetProblem("g", target_state)
+        WriteProblem(problem)
+        ff_output = ff_com.get_plan("./", "domain.txt", "problem.txt", "0")
+        print("FF_OUTPUT:")
+        print(ff_output)
+        steps = _GetSteps(ff_output)
+        if state == "ON":
             ignore_list.extend(_TurnOffActions(item))
-          for item in steps:
+        for item in steps:
             SetItem(item, steps[item])
-  except urllib.error.HTTPError as err:
-    return {"error":err.code}
-  return {}
+    return
 
 
 class Stream(http.server.BaseHTTPRequestHandler):
     def do_POST(self):
-        # Send response status code
         self.send_response(200)
-
-        # Send headers
         self.send_header('Content-type', 'text/html')
         self.end_headers()
-
-        request = self.rfile.readline().decode("utf8")
-        # Send message back to client
-        # Write content as utf-8 data
-        self.wfile.write(bytes(request, "utf8"))
+        update = json.loads(self.rfile.readline().decode("utf8"))
+        process_update(update)
+        self.wfile.write(bytes("All's well.", "utf8"))
         return
 
 
