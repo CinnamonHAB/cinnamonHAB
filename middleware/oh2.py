@@ -97,33 +97,37 @@ def _GetItemNamesAndTypesDict(item):
 
   return items
 
+
 # Gets a problem text for the specified group and the target state.
 # Target state will be copied as given to the problem text.
 def GetProblem(group_name, target_state):
-  global map_item_states_to_target_states
-  group = GetItem(group_name)
-  if ("error" in group):
-    return "error " + str(group["error"])
-  items = _GetItemNamesAndTypesDict(group)
-  for item in map_item_states_to_target_states:
-    items.pop(item)
-  items.update({key.replace("s","l") : "Lamp" for key in items if key.startswith("s")})
-  items.update({key : "Dimmer" for key in items if key.startswith("d")})
-  item_names = [key for key in items]
-  item_types_names = ["(" + items[key] + " " + key + ")" for key in items]
-  item_names_group = ["(IN " + key + " " + group_name + ")" for key in items]
-  item_states = ["(not (ON " + key + "))" if GetItem(key.replace("l", "s"))["state"] == "OFF" else "(ON " + key + ")" for key in items if key[0] == "l"]
-  item_states.extend(["(not (ON " + key + "))" if int(GetItem(key)["state"]) == 0 else "(ON " + key + ")" for key in items if key[0] == "d"])
-  item_states.extend(["(not (DIMMED " + key + "))" if int(GetItem(key)["state"]) != 30 else "(DIMMED " + key + ")" for key in items if key[0] == "d"])
-  problem = "(define\n(problem problem-name)\n(:domain cinnemain)\n"
-  problem += "(:objects " + " ".join(item_names) + " " + group_name + ")\n"
-  problem += "(:init " + "\n".join(item_types_names) + "\n"
-  problem += "(GROUP " + group_name + ")\n"
-  problem += "\n".join(item_names_group) + "\n"
-  problem += "\n".join(item_states) + "\n"
-  problem += "\n".join(["(AFFECTS " + item + " " + item.replace("s", "l") + ")" for item in items if item[0] == "s"]) + ")\n"
-  problem += target_state + ")\n"
-  return problem
+    global map_item_states_to_target_states
+    group = GetItem(group_name)
+    if "error" in group:
+        return "error " + str(group["error"])
+    items = _GetItemNamesAndTypesDict(group)
+    for item in map_item_states_to_target_states:
+        items.pop(item)
+    items.update({key.replace("s","l") : "Lamp" for key in items if key.startswith("s")})
+    items.update({key : "Dimmer" for key in items if key.startswith("d")})
+    item_names = [key for key in items]
+    item_types_names = ["(" + items[key] + " " + key + ")" for key in items]
+    item_names_group = ["(IN " + key + " " + group_name + ")" for key in items]
+    item_states = ["(not (ON " + key + "))" if GetItem(key.replace("l", "s"))["state"] == "OFF" else "(ON " + key + ")" for key in items if key[0] == "l"]
+    item_states.extend(["(not (ON " + key + "))" if int(GetItem(key)["state"]) == 0 else "(ON " + key + ")" for key in items if key[0] == "d"])
+    item_states.extend(["(not (DIMMED " + key + "))" if int(GetItem(key)["state"]) != 30 else "(DIMMED " + key + ")" for key in items if key[0] == "d"])
+    problem = "(define\n(problem problem-name)\n(:domain cinnemain)\n"
+    with open("pddl_init.txt", "r") as pddl_init:
+        problem += pddl_init.read().decode("utf-8")
+    # problem += "(:objects " + " ".join(item_names) + " " + group_name + ")\n"
+    # problem += "(:init " + "\n".join(item_types_names) + "\n"
+    # problem += "(GROUP " + group_name + ")\n"
+    # problem += "\n".join(item_names_group) + "\n"
+    # problem += "\n".join(item_states) + "\n"
+    # problem += "\n".join(["(AFFECTS " + item + " " + item.replace("s", "l") + ")" for item in items if item[0] == "s"]) + ")\n"
+    problem += target_state + ")\n"
+    return problem
+
 
 # Just a wrapper for file printing. In this case used to print problem files.
 def WriteProblem(problem):
