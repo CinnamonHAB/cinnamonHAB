@@ -7,8 +7,8 @@ Rails.application.routes.draw do
 
   get 'rest/openhab_getitems'
   get 'rest/openhab_getItem'
-  get '/main/application'
-  root 'sessions#new'
+  root 'main#application'
+  get 'sessions/new'
   match '/rest/sendaction' => 'rest#middle_sendaction', via: :post
   match '/rest/getitems' => 'rest#openhab_getitems', via: :get
   match '/rest/getstate' => 'rest#openhab_getstate', via: :post

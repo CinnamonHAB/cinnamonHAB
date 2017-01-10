@@ -32,11 +32,12 @@
                         <a class="navbar-brand">CinnamonHAB</a>
                     </div>
                 </div>
-                    <div class="col-lg-6 intro-text">
+                    <!--<div class="col-lg-6 intro-text">
                         <div class="logout-button">
                             <%= button_to "Logout", {:controller => :sessions, :action => 'destroy'}, :method => :delete, class: "btn btn-primary" %>
                         </div>
                     </div>
+                    -->
                 </div>
             </div>
         </div>
@@ -150,6 +151,11 @@
             }
 
             if(numDevices == 0) {
+                var row = document.createElement("div");
+                row.setAttribute('class','row');
+                row.setAttribute('id', mode.name);
+                var col = document.createElement("div");
+                col.setAttribute('class','col-lg-6');
                 var empty = document.createElement('p');
                 empty.innerHTML = "No Devices Found";
                 devices.appendChild(empty);
@@ -437,11 +443,8 @@
         }
 
         function allLights(index) {
-            var state = getState(controlArray[index].name);
-            var obj = {"name":controlArray[index].name, "state":state};
-            var action = JSON.stringify(obj);
-            console.log(action);
-            sendAction(action);
+            getState(controlArray[index].name);
+            
             /*turnOffRomanticMode();
             var icon = document.getElementById(controlArray[index].name+"icon");
             if(controlArray[index].state == "ON") {
@@ -697,7 +700,7 @@
                 type       : "POST",
                 url        : url_path+"/rest/sendaction",
                 data       : action,
-                headers    : { 'Content-Type': 'application/json', 'Accept': 'text/plain' },
+                headers    : { 'Content-Type': 'text/plain', 'Accept': 'text/plain' },
             });
             request.done( function(data) { 
                 console.log( "Success: Status=" + data );
@@ -749,6 +752,7 @@
 
             request.done( function(data) { 
                 console.log( "Success: Status=" + data );
+
             });
 
             request.fail( function(jqXHR, textStatus ) { 
@@ -766,7 +770,10 @@
 
             request.done( function(data) { 
                 console.log( "Success: Status=" + data );
-                return data;
+                var obj = {"name":item, "state":data};
+                var action = JSON.stringify(obj);
+                console.log(action);
+                sendAction(action);
             });
 
             request.fail( function(jqXHR, textStatus ) { 

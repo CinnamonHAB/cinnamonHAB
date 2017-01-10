@@ -26,18 +26,15 @@ class RestController < ApplicationController
     render json: res.body
 	end
   def openhab_getstate
-    puts "ahaha"
     require 'net/http'
     require 'uri'
 
     item = "#{request.body.read}" 
-    puts item
     uri = URI.parse(@@a+'/rest/items/'+item+'/state')
-    req = Net::HTTP::Put.new(uri.to_s)
+    req = Net::HTTP::Get.new(uri.to_s)
     res = Net::HTTP.start(uri.host, uri.port) {|http|
       http.request(req)
     }
-    puts res.body
     render plain: res.body
   end
   def openhab_updatestate
