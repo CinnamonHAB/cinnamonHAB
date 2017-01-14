@@ -10,6 +10,7 @@ services:
       - '/etc/timezone:/etc/timezone:ro'
       - './openhabconfig/userdata:/openhab/userdata'
       - './openhabconfig/conf:/openhab/conf'
+      - '/tmp/demo.items:/openhab/conf/items/demo.items'
     command: 'server'
     #ports:
       #- "8080:8080"
@@ -29,6 +30,8 @@ services:
       - './middleware/target_states.json:/openhab/target_states.json'
       - './middleware/problem.txt:/openhab/problem.txt'
       - './middleware/domain.txt:/openhab/domain.txt'
+      - '/tmp/target_states.json:/middleware/target_states.json'
+      - '/tmp/pddl_init.txt:/middleware/pddl_init.txt'
     entrypoint: 'python3'
     command: '/middleware/start_stream.py'
     links:
@@ -42,5 +45,35 @@ services:
       - './nginxconfig/htpasswd:/etc/nginx/.htpasswd'
     ports:
       - "80:80"
+      - "81:81"
+      - "82:82"
+    depends_on:
+      - custom_ui
+      - openhab
     links:
       - openhab
+      - custom_ui
+
+  custom_ui:
+    image: cinnamonhab/cinnamonapi:cui
+    volumes:
+      - ./customUI/:/cui
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    volumes_from:
+      - box
+    command: /bin/bash -c 'cd /cui && bundle install && bundle exec rails s -b "0.0.0.0"'
+    env_file:
+      - envfile
+    depends_on:
+      - py
+      - openhab
+    links:
+      - py
+      - openhab
+
+  box:
+    image: busybox
+    volumes:
+      - /box
+
