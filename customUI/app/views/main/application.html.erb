@@ -710,6 +710,10 @@
             });
             request.done( function(data) { 
                 console.log( "Success: Status=" + data );
+                for(var i=0;i<numDevices;i++) {
+                    if(isLight(deviceArray[i]))
+                        getState(deviceArray[i].name);
+                }
             });
             request.fail( function(jqXHR, textStatus ) { 
                 console.log( "Failure: " + textStatus );
@@ -784,6 +788,18 @@
                     var action = JSON.stringify(obj);
                     console.log(action);
                     sendAction(action);
+
+                }else
+                {
+                    for(var i=0;i<numDevices;i++) {
+                        if(deviceArray[i].name == item) {
+                            if(data == "ON")
+                                turnLightOn(i);
+                            else
+                                turnLightOff(i);
+                        }
+
+                    }
                 }
             });
 
