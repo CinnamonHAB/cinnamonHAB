@@ -1,0 +1,2 @@
+OPENHAB_SERVER=http://openhab:8080
+MIDDLEWARE_SERVER=http://py:31337
